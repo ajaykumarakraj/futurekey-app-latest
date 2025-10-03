@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "862269800746",
-    "project_id": "citric-glow-464609-d9",
-    "storage_bucket": "citric-glow-464609-d9.firebasestorage.app"
+    "project_number": "506236686009",
+    "project_id": "futurekey-3071e",
+    "storage_bucket": "futurekey-3071e.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:862269800746:android:15bb62aa1950a56130de53",
+        "mobilesdk_app_id": "1:506236686009:android:304952974f9401d489d568",
         "android_client_info": {
           "package_name": "com.futurekey"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCFz4dPannrPPt1W_TUwyV0PmH7o_R3WNU"
+          "current_key": "AIzaSyAASxU7k79U9uREx6JgVVf3rJ3hWk02yTo"
         }
       ],
       "services": {

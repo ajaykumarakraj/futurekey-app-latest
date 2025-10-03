@@ -1,67 +1,87 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, View, Text, StyleSheet } from 'react-native';
+import {
+  Alert,
+  View,
+  Text,
+  StyleSheet,
+  PermissionsAndroid,
+  Platform,
+} from 'react-native';
+
 import { getApp } from '@react-native-firebase/app';
-import messaging from '@react-native-firebase/messaging';
+import {
+  getMessaging,
+  getToken,
+  onMessage,
+  registerDeviceForRemoteMessages,
+} from '@react-native-firebase/messaging';
+
 import { AuthProvider } from './src/context/AuthContext';
 import AppNavigator from './src/Navigators/AppNavigator';
 import * as Animatable from 'react-native-animatable';
 
 const App = () => {
   const [notification, setNotification] = useState(null);
-  const app = getApp(); // ✅ Get Firebase App instance
 
-  const requestUserPermission = async () => {
-    const authStatus = await messaging(app).requestPermission();
-    const enabled =
-      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+  const requestNotificationPermission = async () => {
+    try {
+      if (Platform.OS === 'android' && Platform.Version >= 33) {
+        const result = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
+        );
 
-    if (enabled) {
-      console.log('Notification permission status:', authStatus);
-      getFcmToken();
-    } else {
-      Alert.alert('Push notification permission denied');
-    }
-  };
-
-  const getFcmToken = async () => {
-    const fcmToken = await messaging(app).getToken();
-    if (fcmToken) {
-      console.log('FCM Token:', fcmToken);
-    }
-  };
-
-  const handleNotifications = () => {
-    const unsubscribe = messaging(app).onMessage(async remoteMessage => {
-      setNotification(remoteMessage.notification);
-      setTimeout(() => setNotification(null), 4000);
-    });
-
-    messaging(app).onNotificationOpenedApp(remoteMessage => {
-      console.log('Notification opened from background:', remoteMessage.notification);
-    });
-
-    messaging(app)
-      .getInitialNotification()
-      .then(remoteMessage => {
-        if (remoteMessage) {
-          console.log('Notification caused app to open from quit state:', remoteMessage.notification);
+        if (result !== PermissionsAndroid.RESULTS.GRANTED) {
+          Alert.alert('Notification permission denied');
+          return;
         }
-      });
+      }
+
+      await requestToken();
+    } catch (error) {
+      console.error('Permission error:', error);
+    }
+  };
+
+  const requestToken = async () => {
+    try {
+      const app = getApp();
+      const messaging = getMessaging(app);
+
+      await registerDeviceForRemoteMessages(messaging);
+      const token = await getToken(messaging);
+      console.log('FCM Token:', token);
+    } catch (error) {
+      console.error('Token error:', error);
+    }
+  };
+
+  const listenForMessages = () => {
+    const messaging = getMessaging(getApp());
+
+    const unsubscribe = onMessage(messaging, async remoteMessage => {
+      console.log('Foreground message received:', remoteMessage);
+      if (remoteMessage?.notification) {
+        setNotification(remoteMessage.notification);
+
+        // Auto-hide banner after 4 seconds
+        setTimeout(() => setNotification(null), 4000);
+      }
+    });
 
     return unsubscribe;
   };
 
   useEffect(() => {
-    requestUserPermission();
-    const unsubscribe = handleNotifications();
-    return unsubscribe;
+    requestNotificationPermission();
+    const unsubscribe = listenForMessages();
+    return unsubscribe; // Cleanup on unmount
   }, []);
 
   return (
     <AuthProvider>
       <View style={{ flex: 1 }}>
         <AppNavigator />
+
         {notification && (
           <Animatable.View
             animation="slideInDown"
@@ -86,6 +106,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#333',
     padding: 15,
     zIndex: 9999,
+    elevation: 5,
   },
   notificationTitle: {
     fontSize: 16,
