@@ -63,7 +63,7 @@ const App = () => {
       if (remoteMessage?.notification) {
         setNotification(remoteMessage.notification);
 
-        // Auto-hide banner after 4 seconds
+        // Auto-hide banner after 4 seconds ok
         setTimeout(() => setNotification(null), 4000);
       }
     });
