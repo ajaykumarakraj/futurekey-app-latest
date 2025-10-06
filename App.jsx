@@ -7,8 +7,15 @@ import {
   PermissionsAndroid,
   Platform,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import messaging from '@react-native-firebase/messaging';
+import { getApp } from '@react-native-firebase/app';
+import {
+  getMessaging,
+  getToken,
+  onMessage,
+} from '@react-native-firebase/messaging';
+
 import { AuthProvider } from './src/context/AuthContext';
 import AppNavigator from './src/Navigators/AppNavigator';
 import * as Animatable from 'react-native-animatable';
@@ -17,7 +24,6 @@ import * as Animatable from 'react-native-animatable';
 const App = () => {
   const [notification, setNotification] = useState(null);
 
-  // Request notification permission on Android 13+
   const requestNotificationPermission = async () => {
     try {
       if (Platform.OS === 'android' && Platform.Version >= 33) {
@@ -37,30 +43,38 @@ const App = () => {
     }
   };
 
-  // Register device and get FCM token
   const getFcmToken = async () => {
     try {
-      await messaging().registerDeviceForRemoteMessages();
-      const token = await messaging().getToken();
+      const app = getApp();
+      const messaging = getMessaging(app);
+
+      await messaging.registerDeviceForRemoteMessages(); // still needed
+      const token = await getToken(messaging);
+
       console.log('FCM Token:', token);
 
-      // TODO: Send token to your backend API if needed
-      // await ApiClient.post('/update-fcm-token', { user_id: '1', fcm_token: token });
+      await AsyncStorage.setItem('FCM_TOKEN', token);
+
+      // Optional: Send to backend
+      // await ApiClient.post('/update-fcm-token', {
+      //   user_id: '1',
+      //   fcm_token: token,
+      // });
 
     } catch (error) {
       console.error('FCM token error:', error);
     }
   };
 
-  // Listen for foreground FCM messages
   const listenForForegroundMessages = () => {
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
+    const messaging = getMessaging(getApp());
+
+    const unsubscribe = onMessage(messaging, async remoteMessage => {
       console.log('Foreground message received:', remoteMessage);
 
       if (remoteMessage?.notification) {
         setNotification(remoteMessage.notification);
 
-        // Auto-hide banner after 4 seconds
         setTimeout(() => setNotification(null), 4000);
       }
     });
@@ -73,7 +87,7 @@ const App = () => {
     const unsubscribe = listenForForegroundMessages();
 
     return () => {
-      unsubscribe(); // Clean up the listener on unmount
+      unsubscribe();
     };
   }, []);
 

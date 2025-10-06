@@ -14,12 +14,14 @@ import { useRoute } from '@react-navigation/native';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import ApiClient from '../component/ApiClient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const OTPScreen = () => {
-  const { login } = useAuth();
+  const { login, user } = useAuth();
   const route = useRoute();
   const { phoneNumber } = route.params;
   const [otp, setOtp] = useState(['', '', '', '']);
+  const [fcmToken, setFcmToken] = useState("")
   const inputs = useRef([]);
 
   useEffect(() => {
@@ -62,6 +64,10 @@ const OTPScreen = () => {
       if (response.data.status === 200 && response.data.data) {
         await login(response.data.data, response.data.token);
         Alert.alert('Success', 'Logged in successfully!');
+        const token = await AsyncStorage.getItem('FCM_TOKEN');
+        // console.log('Stored FCM Token:', token);
+        setFcmToken(token)
+        // notificationfun()
       } else {
         Alert.alert('Invalid OTP', response.data.message || 'Please try again.');
       }
@@ -84,6 +90,33 @@ const OTPScreen = () => {
       Alert.alert('Error', 'Something went wrong while resending OTP.');
     }
   };
+
+
+  useEffect(() => {
+    const sendTokenToBackend = async () => {
+      try {
+
+
+        if (!user || !user.user_id || !fcmToken) return; // skip if token is not ready
+        console.log("verify get:-", user.user_id);
+        const response = await ApiClient.post("/update-fcm-token", {
+          user_id: user.user_id,
+          fcm_token: fcmToken,
+        });
+
+        if (response.data.status === 200) {
+          console.log(response.data.message);
+        } else {
+          console.log("Token update failed:", response.data.message);
+        }
+      } catch (error) {
+        console.log("Error sending FCM token:", error);
+      }
+    };
+
+    sendTokenToBackend();
+  }, [fcmToken, user]);
+
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

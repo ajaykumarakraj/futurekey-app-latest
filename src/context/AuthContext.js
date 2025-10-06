@@ -31,6 +31,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (userData, userToken) => {
+    // console.log(userData, "||", userToken)
     await AsyncStorage.setItem('TOKEN', userToken);
     await AsyncStorage.setItem('USER_DATA', JSON.stringify(userData));
     setToken(userToken);

@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "506236686009",
-    "project_id": "futurekey-3071e",
-    "storage_bucket": "futurekey-3071e.firebasestorage.app"
+    "project_number": "265584192717",
+    "project_id": "almonkcrm",
+    "storage_bucket": "almonkcrm.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:506236686009:android:304952974f9401d489d568",
+        "mobilesdk_app_id": "1:265584192717:android:1650b4a9488ae5abeccd84",
         "android_client_info": {
           "package_name": "com.futurekey"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAASxU7k79U9uREx6JgVVf3rJ3hWk02yTo"
+          "current_key": "AIzaSyDYG7V0CpKIj_2xTDDuNDoIHmL9xRFaooo"
         }
       ],
       "services": {
