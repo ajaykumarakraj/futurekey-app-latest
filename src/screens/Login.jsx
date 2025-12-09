@@ -1,91 +1,167 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } from "react-native";
-import axios from "axios"; // Import Axios
-import Icon from 'react-native-vector-icons/Ionicons';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  Image,
+  Platform,
+  Dimensions,
+  SafeAreaView,
+  KeyboardAvoidingView,
+  ScrollView,
+} from "react-native";
+import Icon from "react-native-vector-icons/Ionicons";
 import ApiClient from "../component/ApiClient";
+
+const { width, height } = Dimensions.get("window");
+
 const Login = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
 
   const sendOTP = async () => {
-    if (!phoneNumber.trim() || phoneNumber.length < 10) {
-      Alert.alert("Invalid", "Please enter a valid phone number");
+    if (!phoneNumber || phoneNumber.length !== 10) {
+      Alert.alert("Invalid", "Please enter a valid 10 digit number");
       return;
     }
 
     try {
-      // Using Axios to send the OTP request
-      const response = await ApiClient.post('/send-login-otp', {
-        mobile: phoneNumber, // or "mobile" based on backend spec
+      const response = await ApiClient.post("/send-login-otp", {
+        mobile: phoneNumber,
       });
 
       const data = response.data;
-      console.log("API Response:", data);  // Log the complete response for inspection
 
-      // Check if the API response is successful
       if (data.status === 200) {
-        Alert.alert("OTP Sent", `OTP has been sent to ${phoneNumber}`);
-        // Navigate to OTP screen and pass the phone number and generated OTP
-        navigation.navigate("OTPScreen", { phoneNumber, generatedOTP: data.otp });
-      } else if (data.status === 500) {
-        // Handle specific error if the number is not registered
-        Alert.alert("Error", "Your number is not registered. Please check or register first.");
+        Alert.alert("OTP Sent", `OTP sent to ${phoneNumber}`);
+        navigation.navigate("OTPScreen", {
+          phoneNumber,
+          generatedOTP: data.otp,
+        });
       } else {
-        Alert.alert("Error", "Failed to send OTP. Please try again.");
+        Alert.alert("Error", "Failed to send OTP");
       }
     } catch (error) {
-      console.error("Error sending OTP:", error);
-      Alert.alert("Error", "Something went wrong. Please try again later.");
+      Alert.alert("Error", "Something went wrong");
     }
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.imageset}>
-        <Image source={require('../../Assets/images/FUTUREKEY-HOMES-3.1.png')} style={{ width: 300, height: 200 }} />
-      </View>
-      <Text style={styles.title}>Login</Text>
-      <Icon name="call-outline" size={20} color="#666" style={styles.icon} />
-      <TextInput
-        style={styles.input}
-        placeholder="Enter Mobile Number"
-        keyboardType="phone-pad"
-        value={phoneNumber}
-        maxLength={10}
-        onChangeText={(text) => {
-          const numericText = text.replace(/[^0-9]/g, ''); // Remove all non-digits
-          setPhoneNumber(numericText);
-        }}
-      />
-      <TouchableOpacity style={styles.button} onPress={sendOTP}>
-        <Text style={styles.buttonText}>Send OTP</Text>
-      </TouchableOpacity>
-    </View>
+    <SafeAreaView style={styles.safeArea}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 0}
+      >
+        <ScrollView
+          contentContainerStyle={styles.scrollContainer}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.container}>
+            {/* LOGO */}
+            <View style={styles.imageset}>
+              <Image
+                source={require("../../Assets/images/FUTUREKEY-HOMES-3.1.png")}
+                style={styles.logo}
+                resizeMode="contain"
+              />
+            </View>
+
+            {/* TITLE */}
+            <Text style={styles.title}>Login</Text>
+
+            {/* INPUT */}
+            <View style={styles.inputWrapper}>
+              <Icon name="call-outline" size={20} color="#666" />
+              <TextInput
+                style={styles.input}
+                placeholder="Enter Mobile Number"
+                keyboardType="number-pad"
+                maxLength={10}
+                returnKeyType="done"
+                blurOnSubmit
+                value={phoneNumber}
+                onChangeText={(text) =>
+                  setPhoneNumber(text.replace(/[^0-9]/g, ""))
+                }
+              />
+            </View>
+
+            {/* BUTTON */}
+            <TouchableOpacity style={styles.button} onPress={sendOTP}>
+              <Text style={styles.buttonText}>Send OTP</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1, justifyContent: "center", padding: 20,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    marginBottom: 15,
-    backgroundColor: '#fff',
-  },
-  title: { fontSize: 28, fontWeight: "bold", marginBottom: 20, textAlign: "center" },
-  input: { borderWidth: 1, borderColor: "#ccc", paddingLeft: 30, marginBottom: 10, borderRadius: 5, fontSize: 17 },
-  button: { backgroundColor: "#003961", padding: 15, borderRadius: 5, alignItems: "center" },
-  buttonText: { color: "#fff", fontSize: 16, fontWeight: "bold" },
-  imageset: {
-    margin: "auto"
-  },
-  icon: {
-    top: 32,
-    left: 5,
-    position: "relative"
-  }
-
-});
-
 export default Login;
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: "center",
+  },
+
+  container: {
+    paddingHorizontal: width * 0.07,
+  },
+
+  imageset: {
+    alignItems: "center",
+    marginBottom: height * 0.04,
+  },
+
+  logo: {
+    width: width * 0.55,
+    height: height * 0.12,
+  },
+
+  title: {
+    fontSize: width * 0.08,
+    fontWeight: "700",
+    textAlign: "center",
+    marginBottom: height * 0.03,
+    color: "#003961",
+  },
+
+  inputWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    marginBottom: height * 0.025,
+  },
+
+  input: {
+    flex: 1,
+    fontSize: width * 0.045,
+    paddingVertical: 12,
+    marginLeft: 8,
+  },
+
+  button: {
+    backgroundColor: "#003961",
+    paddingVertical: height * 0.018,
+    borderRadius: 6,
+  },
+
+  buttonText: {
+    color: "#fff",
+    fontSize: width * 0.045,
+    textAlign: "center",
+    fontWeight: "600",
+  },
+});

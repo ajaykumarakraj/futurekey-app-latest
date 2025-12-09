@@ -7,7 +7,7 @@ const Help = ({ navigation }) => {
     Linking.openURL('tel:+1234567890'); // Replace with the actual phone number
   };
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container}> 
       {/* <View style={styles.header}>
                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                  <Ionicons name="arrow-back" size={24} color="white" />

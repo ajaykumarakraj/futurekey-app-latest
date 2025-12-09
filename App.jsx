@@ -8,7 +8,7 @@ import {
   Platform,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import DeviceInfo from 'react-native-device-info';
 import { getApp } from '@react-native-firebase/app';
 import {
   getMessaging,
@@ -23,6 +23,11 @@ import * as Animatable from 'react-native-animatable';
 
 const App = () => {
   const [notification, setNotification] = useState(null);
+  const deviceId = DeviceInfo.getUniqueId();     // Unique ID (may reset on uninstall)
+  const model = DeviceInfo.getModel();
+
+  console.log('Device ID:', deviceId);
+  console.log("model", model)
 
   const requestNotificationPermission = async () => {
     try {

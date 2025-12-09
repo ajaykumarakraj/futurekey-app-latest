@@ -926,6 +926,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     marginTop: 20,
+    marginBottom: 40
   },
   buttonText: {
     color: "white",
@@ -1018,6 +1019,7 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 10,
     color: "#000",
+
   },
   placeholder: {
     color: "#999",
@@ -1027,6 +1029,7 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     marginTop: 30,
+    marginBottom: 40,
     backgroundColor: '#003961',
   },
   remarkText: {

@@ -176,7 +176,7 @@ const TableScreen = ({ navigation, route }) => {
           />
         </TouchableOpacity>
 
-        {Number(leadStatus) == !0 && (
+        {Number(!leadStatus) == 0 && (
           <TouchableOpacity
             onPress={() =>
               navigation.navigate('UpdateScreen', { userSearchdata: item.id })

@@ -24,8 +24,8 @@ ndkVersion "26.1.10909125"
         applicationId "com.futurekey"
         minSdk 24          // ✅ FIXED (was 23, library requires 24+)
         targetSdk 35
-        versionCode 3
-        versionName "1.2"
+        versionCode 4
+        versionName "1.4"
     }
 
     signingConfigs {

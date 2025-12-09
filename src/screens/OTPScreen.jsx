@@ -95,8 +95,6 @@ const OTPScreen = () => {
   useEffect(() => {
     const sendTokenToBackend = async () => {
       try {
-
-
         if (!user || !user.user_id || !fcmToken) return; // skip if token is not ready
         console.log("verify get:-", user.user_id);
         const response = await ApiClient.post("/update-fcm-token", {
@@ -224,3 +222,4 @@ const styles = StyleSheet.create({
 });
 
 export default OTPScreen;
+ 
