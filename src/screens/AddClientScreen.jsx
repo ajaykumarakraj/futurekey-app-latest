@@ -57,12 +57,12 @@ const AddClientScreen = ({ navigation }) => {
   //   { value: "Instagram" },
   // ];
 
-  const projectData = [
-    { key: "1", value: "Golden Enclave" },
-    { key: "2", value: "Golden Enclave 23k Square" },
-    { key: "3", value: "Golden Home" },
-    { key: "4", value: "Golden Home 3 Lac" },
-  ];
+  // const projectData = [
+  //   { key: "1", value: "Golden Enclave" },
+  //   { key: "2", value: "Golden Enclave 23k Square" },
+  //   { key: "3", value: "Golden Home" },
+  //   { key: "4", value: "Golden Home 3 Lac" },
+  // ];
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -204,8 +204,8 @@ const AddClientScreen = ({ navigation }) => {
       Alert.alert("Error", "Failed to add client. Please try again.");
     }
   };
-  console.log(selectedState)
-  console.log(statedata)
+  // console.log(selectedState)
+  // console.log(statedata)
   return (
     <ScrollView style={styles.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
       <View style={{ paddingBottom: 100 }}>

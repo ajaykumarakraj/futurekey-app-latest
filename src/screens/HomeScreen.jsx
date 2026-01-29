@@ -95,8 +95,10 @@ const HomeScreen = ({ navigation }) => {
           <LeadBox title="In Process Leads" count={data.in_process} icon={require('../../Assets/icons/progress.png')} onPress={() => goToTable('in_process')} />
           <LeadBox title="Archived Leads" count={data.archived_lead} icon={require('../../Assets/icons/location.png')} onPress={() => goToTable('archived_lead')} />
         </View>
-
+        <View style={styles.row}>
+        <LeadBox title="Reassign" count={data.re_assign} icon={require('../../Assets/icons/rotation.png')} onPress={() => goToTable('re_assign')} />
         <LeadBox title="Converted" count={data.converted} icon={require('../../Assets/icons/users.png')} onPress={() => goToTable('converted')} />
+        </View>
       </View>
     </ScrollView>
   );

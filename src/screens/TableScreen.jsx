@@ -36,7 +36,7 @@ const mapLeadTypeToStatus = (type) => {
     case 'today_follow_up': return 8;
     case 'tomorrow_site_visit': return 9;
     case 'scheduled_site_visit': return 10;
-
+    case 're_assign': return 11;
 
     default: return 0;
   }
@@ -82,7 +82,7 @@ const TableScreen = ({ navigation, route }) => {
       }
     }, [user?.user_id, token, leadStatus])
   );
-
+// console.log("lead type",leadStatus)
   // Fetch lead data from API
   const leadData = async () => {
     setLoading(true);
@@ -90,8 +90,8 @@ const TableScreen = ({ navigation, route }) => {
       const res = await ApiClient.post(
         '/get-lead-data',
         {
-          user_id: user.user_id,
-          lead_status: leadStatus,
+        lead_status:leadStatus,
+        user_id:user.user_id
         },
         {
           headers: {
@@ -190,7 +190,7 @@ const TableScreen = ({ navigation, route }) => {
 
       <View style={styles.desigedtext}>
         <Text style={styles.extraText}><View style={styles.widthadd}><Text >Project</Text><Text>:{item.form_name} </Text></View></Text>
-        <Text style={styles.extraText}><View style={styles.widthadd}><Text >Entry Date</Text><Text>:{item.created_at}</Text></View></Text>
+        <Text style={styles.extraText}><View style={styles.widthadd}><Text >Entry Date</Text><Text>:{item.entry_date}</Text></View></Text>
         <Text style={styles.extraText}><View style={styles.widthadd}><Text >Last Assigned</Text><Text>:{item.assign_time}</Text></View></Text>
         <Text style={styles.extraText}><View style={styles.widthadd}><Text >Lead Source</Text><Text>:{item.lead_source}</Text></View></Text>
         <Text style={styles.extraText}><View style={styles.widthadd}><Text >Agent</Text><Text>:{item.agent}</Text></View></Text>
@@ -201,7 +201,7 @@ const TableScreen = ({ navigation, route }) => {
           <Text style={styles.extraText}>Name: {item.name}</Text>
           <Text style={styles.extraText}>Project: {item.form_name}</Text>
           <Text style={styles.extraText}>Agent: {item.agent}</Text>
-          <Text style={styles.extraText}>Entry Date: {item.created_at}</Text>
+          <Text style={styles.extraText}>Entry Date: {item.entry_date}</Text>
           <Text style={styles.extraText}>Last Assigned: {item.assign_time}</Text>
           <Text style={styles.extraText}>Lead Source: {item.lead_source}</Text>
           <Text style={styles.extraText}>Phone Number: {item.contact}</Text>
