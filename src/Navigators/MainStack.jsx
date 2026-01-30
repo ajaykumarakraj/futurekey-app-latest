@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
-import TableScreen from "../screens/TableScreen";
+import HomeTableList from "../screens/HomeTableList";
 import UpdateScreen from "../screens/UpdateScreen";
 import UserManagement from "../screens/UserManagement/UserManagement";
 import Help from "../screens/Help";
@@ -20,6 +20,8 @@ import AddMasterSetting from "../screens/AddMasterSetting";
 import TabNavigator from "./Tabnavigator";
 import FilterMain from "../screens/FilterMain";
 import CheckIn from "../screens/CheckIn";
+import FilterTableList from "../screens/FilterTableList";
+import FilterHomeScreen from "../screens/FilterHomeScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -45,7 +47,9 @@ const MainStack = () => (
     />
 
     {/* ✅ All screens below will show header + filter icon */}
-    <Stack.Screen name="Table" component={TableScreen} />
+    <Stack.Screen name="Table" component={HomeTableList} />
+    <Stack.Screen name="filtertable" component={FilterTableList}/>
+    <Stack.Screen name="filterHomeScreen" component={FilterHomeScreen}/>
     <Stack.Screen name="Filter" component={FilterMain} />
     <Stack.Screen name="UpdateScreen" component={UpdateScreen} />
     <Stack.Screen name="AddUser" component={AddUser} />

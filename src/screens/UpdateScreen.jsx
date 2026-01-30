@@ -279,10 +279,10 @@ const UpdateScreen = ({ route, navigation }) => {
   const formattedDate = dateTime ? moment(dateTime).format('YYYY-MM-DD HH:mm:ss') : "";
   const handleSaveNote = async () => {
 
-    console.log("date:", formattedDate)
-    console.log("Call status:", Callstatus)
-    console.log("last Call Action:", callAction)
-    console.log("lead:", lead)
+    // console.log("date:", formattedDate)
+    // console.log("Call status:", Callstatus)
+    // console.log("last Call Action:", callAction)
+    // console.log("lead:", lead)
 
     // Rule 1: Require follow-up date if not archived and no call status selected
     if (lead !== '4' && !formattedDate && !Callstatus == "0") {

@@ -42,14 +42,20 @@ const mapLeadTypeToStatus = (type) => {
   }
 };
 
-const TableScreen = ({ navigation, route }) => {
+const HomeTableList = ({ navigation, route }) => {
+
+const [data, setData] = useState([]);
+const [page, setPage] = useState(1);
+const [lastPage, setLastPage] = useState(1);
+const [loading, setLoading] = useState(false);
+
+
   const [expandedRowId, setExpandedRowId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [selectedAgent, setSelectedAgent] = useState('');
   const [agentsList, setAgentsList] = useState([]);
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
+
   const { user, token } = useAuth();
   const { leadType } = route.params || {};
 
@@ -75,46 +81,64 @@ const TableScreen = ({ navigation, route }) => {
   }, [user, token, leadStatus]);
 
   // Fetch data when screen is focused
-  useFocusEffect(
-    useCallback(() => {
-      if (user?.user_id && token) {
-        leadData();
-      }
-    }, [user?.user_id, token, leadStatus])
-  );
+useFocusEffect(
+  useCallback(() => {
+    if (user?.user_id && token) {
+      leadData(1);
+    }
+  }, [user?.user_id, token, leadStatus])
+);
+
 // console.log("lead type",leadStatus)
   // Fetch lead data from API
-  const leadData = async () => {
-    setLoading(true);
-    try {
-      const res = await ApiClient.post(
-        '/get-lead-data',
-        {
-        lead_status:leadStatus,
-        user_id:user.user_id
+ const leadData = async (pageNumber = 1) => {
+  setLoading(true);
+
+  try {
+    const res = await ApiClient.post(
+      `/get-lead-data?page=${pageNumber}`,
+      {
+        lead_status: leadStatus,
+        user_id: user.user_id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (res.data.status === 200) {
-
-        console.log(res.data.data)
-        setData(res.data.data);
-        extractAgents(res.data.data);
-      } else {
-        Alert.alert('Error', res.data.message || 'Failed to fetch data');
       }
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      Alert.alert('Error', 'Network or server issue occurred.');
-    } finally {
-      setLoading(false);
+    );
+
+    if (res.data.status === 200) {
+      setData(res.data.data);
+      setPage(res.data.meta.current_page);
+      setLastPage(res.data.meta.last_page);
+
+      extractAgents(res.data.data);
+    } else {
+      Alert.alert('Error', res.data.message || 'Failed to fetch data');
     }
-  };
+  } catch (error) {
+    console.error(error);
+    Alert.alert('Error', 'Network issue');
+  } finally {
+    setLoading(false);
+  }
+};
+
+// Button handlers 
+
+const handleNext = () => {
+  if (page < lastPage) {
+    leadData(page + 1);
+  }
+};
+
+const handlePrev = () => {
+  if (page > 1) {
+    leadData(page - 1);
+  }
+};
+
 
   // Extract unique agent names from the data
   const extractAgents = (leads) => {
@@ -212,15 +236,7 @@ const TableScreen = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      {/* <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
-        >
-          <Ionicons name="arrow-back" size={24} color="white" />
-        </TouchableOpacity>
-        <Text style={styles.headerText}>Leads</Text>
-      </View> */}
+    
 
       <TextInput
         placeholder="Search by name, contact, project, agent"
@@ -234,36 +250,52 @@ const TableScreen = ({ navigation, route }) => {
           All Agents
         </Text>
       </View>
-      {/* <Picker
-        selectedValue={selectedAgent}
-        onValueChange={(itemValue) => setSelectedAgent(itemValue)}
-        style={styles.picker}
-      >
-        <Picker.Item label="All Agents" value="" />
-        {/* {agentsList.map((agent, index) => (
-          <Picker.Item key={index} label={agent} value={agent} />
-        ))} 
-      </Picker> */}
+     
 
       {loading ? (
         <ActivityIndicator size="large" color="#003961" style={{ marginTop: 20 }} />
       ) : (
-        <FlatList
-          data={filteredData}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={renderItem}
-          ListEmptyComponent={
-            <Text style={{ textAlign: 'center', marginTop: 30 }}>
-              No leads found.
-            </Text>
-          }
-        />
+     <FlatList
+  data={filteredData}
+  keyExtractor={(item) => item.id.toString()}
+  renderItem={renderItem}
+/>
+
+
       )}
+      <View style={styles.pagination}>
+  <TouchableOpacity
+    onPress={handlePrev}
+    disabled={page === 1}
+    style={[
+      styles.btn,
+      page === 1 && styles.disabledBtn
+    ]}
+  >
+    <Text style={styles.btnText}>Previous</Text>
+  </TouchableOpacity>
+
+  <Text style={styles.pageText}>
+    Page {page} of {lastPage}
+  </Text>
+
+  <TouchableOpacity
+    onPress={handleNext}
+    disabled={page === lastPage}
+    style={[
+      styles.btn,
+      page === lastPage && styles.disabledBtn
+    ]}
+  >
+    <Text style={styles.btnText}>Next</Text>
+  </TouchableOpacity>
+</View>
     </View>
+    
   );
 };
 
-export default TableScreen;
+export default HomeTableList;
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f1f1f1', padding: 10 },
@@ -330,4 +362,28 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   extraText: { fontSize: 14, color: '#333', marginBottom: 5, textAlign: "left" },
+ 
+  pagination: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 12,
+  },
+  btn: {
+    backgroundColor: '#007bff',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 6,
+  },
+  disabledBtn: {
+    backgroundColor: '#ccc',
+  },
+  btnText: {
+    color: '#fff',
+    fontWeight: '600',
+  },
+  pageText: {
+    fontWeight: '600',
+  },
+
 });

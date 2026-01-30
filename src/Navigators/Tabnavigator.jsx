@@ -45,6 +45,7 @@ const TabNavigator = () => {
       <Tab.Screen name="Settings" component={SettingsScreen} />
       <Tab.Screen name="Search" component={SearchScreen} />
       <Tab.Screen name="Notification" component={NotificationScreen} />
+      
     </Tab.Navigator>
   );
 };

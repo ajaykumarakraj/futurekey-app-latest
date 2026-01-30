@@ -7,24 +7,20 @@ import { useAuth } from '../context/AuthContext';
 import { SelectList } from "react-native-dropdown-select-list";
 import axios from "axios";
 
-const FilterForm = () => {
+const FilterForm = ({ navigation }) => {
     const { user, token } = useAuth();
-    const [currentForm, setCurrentForm] = useState("form1");   
+    const [currentForm, setCurrentForm] = useState("lead");   
     const [fromDate, setFromDate] = useState(null);
     const [toDate, setToDate] = useState(null);
     const [showFromPicker, setShowFromPicker] = useState(false);
     const [showToPicker, setShowToPicker] = useState(false);
 
 
+  const [teamleaderList, setTeamleaderList] = useState([]);
+   const [teamleader, setTeamleader] = useState("");
+  const [agentList, setAgentList] = useState([]);
+  const [agent, setAgent] = useState("");
 
-    const [form1Data, setForm1Data] = useState({
-       
-        fromDate: new Date(),
-        toDate: new Date(),
-    });
-    const [form2Data, setForm2Data] = useState({ phone: '', altPhone: '' });
-    const [form3Data, setForm3Data] = useState({ city: '', pin: '' });
-    const [form4Data, setForm4Data] = useState({ feedback: '' });
 
     const [dropdownOpen1, setDropdownOpen1] = useState(false);
     const [dropdownOpen2, setDropdownOpen2] = useState(false);
@@ -32,23 +28,90 @@ const FilterForm = () => {
     const [showFromDate, setShowFromDate] = useState(false);
     const [showToDate, setShowToDate] = useState(false);
 
-     const [leadsourcelist,setLeadsourceList]=useState([])
-     const [leadsource,setLeadsource]=useState([])
+    const [leadsourcelist,setLeadsourceList]=useState([])
+    const [leadsource,setLeadsource]=useState("")
+
+    const [leadType,setLeadType]=useState([])
+    const [projectList,setProjectList]=useState([])
+    const [project,setProject]=useState("all")
+
+const LeadType=[,{value:"New Lead"},{value:"InProcess Lead"},{value:"Hot Lead"},{value:"Archived Lead"},{value:"Converted Lead"},{value:"Reassign Lead"}]
+// console.log(project,"project")
+
+// team Leader and agent list api 
+  useEffect(() => {      
+    fetchTeamLeaders();
+  }, []);
+
+const fetchTeamLeaders = async () => {
+    try {
+      const res = await axios.get("https://api.almonkdigital.in/api/admin/get-team-leader", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.status === 200) {
+        setTeamleaderList(res.data.data.map((tl) => ({ key: tl.user_id.toString(), value: tl.name })));
+      }
+    } catch (error) {
+      console.log("Team leader fetch error:", error);
+    }
+  };
+useEffect(() => {
+  if (user?.role === "Team Leader" && user?.user_id) {
+    handleTeamLeaderSelect(user.user_id);
+  }
+}, [user?.role, user?.user_id]);
+
+ const handleTeamLeaderSelect = async (id) => {
+  if (!id) return;
+
+  setTeamleader(id);
+
+  try {
+    const res = await axios.get(
+      `https://api.almonkdigital.in/api/admin/get-agent/${id}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+
+    if (res.status === 200) {
+      setAgentList(
+        res.data.data.map((ag) => ({
+          key: ag.id.toString(),
+          value: ag.name,
+        }))
+      );
+    }
+  } catch (error) {
+    console.log("Agent fetch error:", error);
+  }
+};
 
 
- const [projectList,setProjectList]=useState([])
-  const [project,setProject]=useState([])
 
+
+
+// navigation section 
+
+ const handlSubmit = () => {
+    navigation.navigate('filtertable', { leadsource ,project,leadType,fromdate,todate,currentForm});
+  };
+
+console.log(teamleader,agent)
+
+   const handlSubmitTL = () => {
+    navigation.navigate('filterHomeScreen', { leadsource ,project,leadType,fromdate,todate,currentForm, teamleader,agent});
+  };
+    // date section 
   const formatDate = (date) => {
     if (!date) return null;
     return date.toISOString().split('T')[0]; // Format as YYYY-MM-DD
   };
 
-const f=formatDate(fromDate)
-const t=formatDate(toDate)
- console.log(f,t)
-const renderDateText = (date) => date ? date.toLocaleDateString() : 'Select date';
+const fromdate=formatDate(fromDate)
+const todate=formatDate(toDate)
 
+const renderDateText = (date) => date ? date.toLocaleDateString() : 'Select date';
 
   const handleDateChange = (setter, setShow) => (event, selectedDate) => {
     setShow(false);
@@ -57,6 +120,8 @@ const renderDateText = (date) => date ? date.toLocaleDateString() : 'Select date
     }
   };
 
+
+// get project and lead source 
 useEffect(() => {
   fetchRequirements();
 }, []); 
@@ -85,46 +150,23 @@ const fetchRequirements = async () => {
 
 
 
-    const handlSubmit = async() => {
-  payload={
-     type:"lead", 
-     tl_agent,
-     report,
-     user_id: "33",
-     tl_id:"33",
-     agent_id:"33",
-     project:"all",
-     lead_source:"facebook",
-     from_date:"2026-01-01",
-     to_date:"2026-01-30"
-    }
-    try {
-      const res = await axios.get("https://api.almonkdigital.in/api/admin/filter-report",payload, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.status === 200) {
-       console.log(res.data)
-       
-      }
-    } catch (error) {
-      console.log(error);
-    }
-    };
-
+console.log(user.role)
+console.log(user.name)
+console.log(user)
     const renderForm = () => {
         switch (currentForm) {
-            case "form1":
+            case "lead":
                 return (
                     <View style={styles.form}>
-                        <Text style={styles.title}>Form 1 - Basic</Text>
+                        {/* <Text style={styles.title}>Form 1 - Basic</Text> */}
 
-                        {/* Name Dropdown */}
-                      <View style={styles.pickerWrapper}><SelectList data={leadsourcelist} setSelected={setLeadsource} placeholder="All Lead Source" search={false} /></View>
+                        {/* lead source Dropdown */}
+                        <View style={styles.pickerWrapper}><SelectList data={leadsourcelist} setSelected={setLeadsource} placeholder="All Lead Source" search={false} /></View>
 
-                        {/* Email Dropdown */}
+                       {/* Project Dropdown */}
                         <View style={styles.pickerWrapper}><SelectList data={projectList} setSelected={setProject} placeholder="All Project" search={false} /></View>
-
-                     
+                       {/* lead type  */}
+                        <View style={styles.pickerWrapper}><SelectList data={LeadType} setSelected={setLeadType} placeholder="Lead Status" search={false} /></View>
  {/* Date Pickers */}
     <View style={styles.datesec}>
 
@@ -171,94 +213,95 @@ const fetchRequirements = async () => {
   </View>
 
 </View>
-
+  <TouchableOpacity style={styles.submitButton} onPress={handlSubmit}>
+                <Text style={styles.submitText} >Submit</Text>
+            </TouchableOpacity>
 
                     </View>
                 );
 
-            case "form2":
+            case "TL/Agent":
                 return (
-                    <View style={styles.form}>
-                        <Text style={styles.title}>Form 2 - Contact</Text>
-                        <View style={{ zIndex: 2000, marginBottom: 20 }}>
-                            <DropDownPicker
-                                open={dropdownOpen1}
-                                value={form1Data.name}
-                                items={[
-                                    { label: 'Ajay', value: 'Ajay' },
-                                    { label: 'Neha', value: 'Neha' },
-                                    { label: 'Ravi', value: 'Ravi' }
-                                ]}
-                                setOpen={setDropdownOpen1}
-                                setValue={(callback) => {
-                                    const value = callback(form1Data.name);
-                                    setForm1Data({ ...form1Data, name: value });
-                                }}
-                                placeholder="Select Name"
-                                placeholderStyle={styles.placeholder}
-                                style={styles.dropdown}
-                                dropDownContainerStyle={styles.dropdownBox}
-                            />
-                        </View>
+                     <View style={styles.form}>
+                        {/* <Text style={styles.title}>Form 1 - Basic</Text> */}
+<View
+  style={styles.pickerWrapper}
+  pointerEvents={user.role === "Team Leader" ? "none" : "auto"}
+>
+  <SelectList
+    data={teamleaderList}
+    setSelected={handleTeamLeaderSelect}
+    placeholder={
+      user.role === "Team Leader" ? user.name : "Team Leader"
+    }
+    search={true}
+    boxStyles={
+      user.role === "Team Leader"
+        ? { backgroundColor: "#eee", opacity: 0.8 }
+        : {}
+    }
+  />
+</View>
 
-                        {/* Email Dropdown */}
-                        <View style={{ zIndex: 1000, marginBottom: 12 }}>
-                            <DropDownPicker
-                                open={dropdownOpen2}
-                                value={form1Data.email}
-                                items={[
-                                    { label: 'ajay@example.com', value: 'ajay@example.com' },
-                                    { label: 'neha@example.com', value: 'neha@example.com' },
-                                    { label: 'ravi@example.com', value: 'ravi@example.com' }
-                                ]}
-                                setOpen={setDropdownOpen2}
-                                setValue={(callback) => {
-                                    const value = callback(form1Data.email);
-                                    setForm1Data({ ...form1Data, email: value });
-                                }}
-                                placeholder="Select Email"
-                                placeholderStyle={styles.placeholder}
-                                style={styles.dropdown}
-                                dropDownContainerStyle={styles.dropdownBox}
-                            />
-                        </View>
 
-                        {/* From & To Dates */}
-                        <View style={styles.datepick}>
-                            <TouchableOpacity onPress={() => setShowFromDate(true)} style={styles.dateButton}>
-                                <Text style={styles.dateText}>From: {form1Data.fromDate.toDateString()}</Text>
-                            </TouchableOpacity>
-                            {showFromDate && (
-                                <DateTimePicker
-                                    value={form1Data.fromDate}
-                                    mode="date"
-                                    display="default"
-                                    onChange={(event, selectedDate) => {
-                                        setShowFromDate(Platform.OS === 'ios');
-                                        if (selectedDate) {
-                                            setForm1Data({ ...form1Data, fromDate: selectedDate });
-                                        }
-                                    }}
-                                />
-                            )}
+        <View style={styles.pickerWrapper}><SelectList data={agentList} setSelected={setAgent} placeholder="Agent" search={false} /></View>
+                        {/* lead source Dropdown */}
+                        <View style={styles.pickerWrapper}><SelectList data={leadsourcelist} setSelected={setLeadsource} placeholder="All Lead Source" search={false} /></View>
 
-                            <TouchableOpacity onPress={() => setShowToDate(true)} style={styles.dateButton}>
-                                <Text style={styles.dateText}>To: {form1Data.toDate.toDateString()}</Text>
-                            </TouchableOpacity>
-                            {showToDate && (
-                                <DateTimePicker
-                                    value={form1Data.toDate}
-                                    mode="date"
-                                    display="default"
-                                    onChange={(event, selectedDate) => {
-                                        setShowToDate(Platform.OS === 'ios');
-                                        if (selectedDate) {
-                                            setForm1Data({ ...form1Data, toDate: selectedDate });
-                                        }
-                                    }}
-                                />
-                            )}
-                        </View>
+                       {/* Project Dropdown */}
+                        <View style={styles.pickerWrapper}><SelectList data={projectList} setSelected={setProject} placeholder="All Project" search={false} /></View>
+                       {/* lead type  */}
+                        <View style={styles.pickerWrapper}><SelectList data={LeadType} setSelected={setLeadType} placeholder="Lead Status" search={false} /></View>
+ {/* Date Pickers */}
+    <View style={styles.datesec}>
+
+  <View style={styles.dateBox}>
+    <Text style={styles.label}>From Date</Text>
+    <TouchableOpacity
+      onPress={() => setShowFromPicker(true)}
+      style={styles.dateButton}
+    >
+      <Text style={[styles.dateText, !fromDate && styles.placeholder]}>
+        {renderDateText(fromDate)}
+      </Text>
+    </TouchableOpacity>
+
+    {showFromPicker && (
+      <DateTimePicker
+        value={fromDate || new Date()}
+        mode="date"
+        display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+        onChange={handleDateChange(setFromDate, setShowFromPicker)}
+      />
+    )}
+  </View>
+
+  <View style={styles.dateBox}>
+    <Text style={styles.label}>To Date</Text>
+    <TouchableOpacity
+      onPress={() => setShowToPicker(true)}
+      style={styles.dateButton}
+    >
+      <Text style={[styles.dateText, !toDate && styles.placeholder]}>
+        {renderDateText(toDate)}
+      </Text>
+    </TouchableOpacity>
+
+    {showToPicker && (
+      <DateTimePicker
+        value={toDate || new Date()}
+        mode="date"
+        display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+        onChange={handleDateChange(setToDate, setShowToPicker)}
+      />
+    )}
+  </View>
+
+</View>
+  <TouchableOpacity style={styles.submitButton} onPress={handlSubmitTL}>
+                <Text style={styles.submitText} >Submit</Text>
+            </TouchableOpacity>
+
                     </View>
                 );
 
@@ -439,11 +482,11 @@ const fetchRequirements = async () => {
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <View style={styles.buttonRow}>
-                <TouchableOpacity style={[styles.switchButton, currentForm === 'form1' && styles.activeButton]} onPress={() => setCurrentForm('form1')}>
+                <TouchableOpacity style={[styles.switchButton, currentForm === 'lead' && styles.activeButton]} onPress={() => setCurrentForm('lead')}>
                     <Text style={styles.buttonText}>Lead</Text>
                 </TouchableOpacity>
                 {user?.role !== "Agent" && (
-                <TouchableOpacity style={[styles.switchButton, currentForm === 'form2' && styles.activeButton]} onPress={() => setCurrentForm('form2')}>
+                <TouchableOpacity style={[styles.switchButton, currentForm === 'TL/Agent' && styles.activeButton]} onPress={() => setCurrentForm('TL/Agent')}>
                     <Text style={styles.buttonText}>TL/Agent</Text>
                 </TouchableOpacity>)}
                 <TouchableOpacity style={[styles.switchButton, currentForm === 'form3' && styles.activeButton]} onPress={() => setCurrentForm('form3')}>
@@ -456,9 +499,9 @@ const fetchRequirements = async () => {
 
             {renderForm()}
 
-            <TouchableOpacity style={styles.submitButton} onPress={handlSubmit}>
-                <Text style={styles.submitText}>Submit</Text>
-            </TouchableOpacity>
+            {/* <TouchableOpacity style={styles.submitButton} onPress={handlSubmit}>
+                <Text style={styles.submitText} >Submit</Text>
+            </TouchableOpacity> */}
         </ScrollView>
     );
 };
@@ -520,6 +563,7 @@ const styles = StyleSheet.create({
         padding: 12,
         borderRadius: 10,
         alignItems: 'center',
+        marginTop:15
     },
     submitText: {
         color: '#fff',
