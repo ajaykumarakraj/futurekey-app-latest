@@ -12,7 +12,7 @@ const SplashScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Image source={require('../../Assets/images/FUTUREKEY-HOMES-3.1.png')} style={{ width: 300, height: 200 }} />
+      <Image source={require('../../Assets/images/FUTUREKEY-HOMES-3.1.png')} style={{ width: 200, height: 200 }} />
       <Text style={styles.text}>Welcome to the App</Text>
     </View>
   );

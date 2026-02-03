@@ -7,53 +7,90 @@ import {
   ScrollView,
   RefreshControl,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+  useRef,
+} from 'react';
 import { useAuth } from '../context/AuthContext';
 import ApiClient from '../component/ApiClient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+// Function defined before usage
+const mapLeadTypeToStatus = (type) => {
+  switch (type) {
+   
+    case 'New Lead': return 1;
+    case 'InProcess Lead': return 2;
+    case 'Hot Lead': return 3;
+    case 'Archived Lead': return 4;
+    case 'Converted Lead': return 5;
+   
+    case 'Reassign Lead': return 11;
 
+    default: return "all";
+  }
+};
 const FilterHomeScreen = ({ navigation ,route}) => {
    const { leadsource ,project,leadType,todate,fromdate ,currentForm,teamleader,agent} = route.params || {};
   const [refreshing, setRefreshing] = useState(false);
   const { user, token } = useAuth();
   const [data, setData] = useState({});
-console.log(leadsource ,project,leadType,todate,fromdate ,currentForm,teamleader,agent)
+// console.log(leadsource ,project,leadType,todate,fromdate ,currentForm,teamleader,agent)
   const onRefresh = () => {
     setRefreshing(true);
     numData(); // ✅ fixed
     setTimeout(() => setRefreshing(false), 1500);
   };
-
+ const leadStatus = useMemo(() => mapLeadTypeToStatus(leadType), [leadType]);
+//  console.log(leadStatus)
   useEffect(() => {
-    if (user?.user_id && token) {
-      numData();
-    }
+  if (user?.user_id && token) {
+    numData();
+  }
 
-    navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity onPress={() => navigation.navigate('Filter')}>
-          <Ionicons
-            name="filter-outline"
-            size={24}
-            color="#000"
-            style={{ marginRight: 15 }}
-          />
-        </TouchableOpacity>
-      ),
-      headerTitle: 'Dashboard',
-    });
-  }, [user, token, navigation]);
+  navigation.setOptions({
+    headerLeft: () => (
+     <TouchableOpacity
+        onPress={() =>
+          navigation.navigate('TabNavigator', {
+            screen: 'HomeTab',
+          })
+        }
+        style={{ marginLeft: 15 }}
+      >
+        <Ionicons name="home-outline" size={24} color="#000" />
+      </TouchableOpacity>
+    ),
+
+    headerRight: () => (
+      <TouchableOpacity
+        onPress={() => navigation.navigate('Filter')}
+        style={{ marginRight: 15 }}
+      >
+        <Ionicons name="filter-outline" size={24} color="#000" />
+      </TouchableOpacity>
+    ),
+
+    headerTitle: '', // ❌ text hata diya
+  });
+}, [user, token, navigation]);
+
 
   const numData = async () => {
-  const  payload={type:"tl_agent",
-    user_id: "33",
-    lead_status: "1",
-    tl_id:"6",
-    agent_id:"33",
-    project:"all",
-    lead_source:"facebook",
-    from_date:"2026-01-01",
-    to_date:"2026-01-30"}
+  const  payload={
+    type:currentForm,
+    user_id: user.user_id,
+    lead_status: leadStatus,
+    tl_id:teamleader,
+    agent_id:agent,
+    project:project,
+    lead_source:leadsource,
+    from_date:fromdate,
+    to_date:todate
+  }
+  // console.log("post data",payload)
     try {
       const res = await ApiClient.post(`/filter-report`,payload ,{
         headers: {
@@ -63,7 +100,7 @@ console.log(leadsource ,project,leadType,todate,fromdate ,currentForm,teamleader
 
       if (res.data.status === 200) {
         setData(res.data.data);
-        console.log('Dashboard data:', res.data.data);
+        // console.log('Dashboard data:', res.data.data);
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -71,9 +108,9 @@ console.log(leadsource ,project,leadType,todate,fromdate ,currentForm,teamleader
   };
 
   const goToTable = (leadType) => {
-    navigation.navigate('Table', { leadType });
+    navigation.navigate('FilterSelectTable', { leadType ,teamleader,agent});
   };
-
+// console.log(user)
   return (
     <ScrollView
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>

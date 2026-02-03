@@ -90,7 +90,7 @@ const Notes = ({ route, navigation }) => {
         }
       );
 
-      console.log("Success:", res.data);
+      // console.log("Success:", res.data);
       Alert.alert("Success", "Client updated successfully!");
       navigation.goBack();
     } catch (error) {

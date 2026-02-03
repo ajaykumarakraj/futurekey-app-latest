@@ -39,7 +39,7 @@ const HomeScreen = ({ navigation }) => {
           />
         </TouchableOpacity>
       ),
-      headerTitle: 'Dashboard',
+      headerTitle: 'Home',
     });
   }, [user, token, navigation]);
 
@@ -53,7 +53,7 @@ const HomeScreen = ({ navigation }) => {
 
       if (res.data.status === 200) {
         setData(res.data.data);
-        console.log('Dashboard data:', res.data.data);
+        // console.log('Dashboard data:', res.data.data);
       }
     } catch (error) {
       console.error('Error fetching data:', error);

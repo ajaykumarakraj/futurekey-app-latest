@@ -42,7 +42,8 @@
     "react-native-select-dropdown": "^4.0.1",
     "react-native-share": "^12.1.0",
     "react-native-toast-message": "^2.3.3",
-    "react-native-vector-icons": "^10.2.0"
+    "react-native-vector-icons": "^10.2.0",
+    "react-native-version-check": "^3.5.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

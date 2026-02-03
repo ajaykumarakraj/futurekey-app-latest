@@ -33,7 +33,7 @@ const AddMasterSetting = ({ navigation }) => {
           },
         }
       )
-      console.log(res.data)
+      // console.log(res.data)
       navigation.goBack();
     } catch (error) {
       console.log(error)

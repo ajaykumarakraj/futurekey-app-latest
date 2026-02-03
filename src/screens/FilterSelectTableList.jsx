@@ -25,20 +25,24 @@ import ApiClient from '../component/ApiClient';
 // Function defined before usage
 const mapLeadTypeToStatus = (type) => {
   switch (type) {
-   
-    case 'New Lead': return 1;
-    case 'InProcess Lead': return 2;
-    case 'Hot Lead': return 3;
-    case 'Archived Lead': return 4;
-    case 'Converted Lead': return 5;
-   
-    case 'Reassign Lead': return 11;
+    case 'fresh_lead': return 0;
+    case 'new_lead': return 1;
+    case 'in_process': return 2;
+    case 'hot_lead': return 3;
+    case 'archived_lead': return 4;
+    case 'converted': return 5;
+    case 'missed_follow_up': return 6;
+    case 'today_site_visit': return 7;
+    case 'today_follow_up': return 8;
+    case 'tomorrow_site_visit': return 9;
+    case 'scheduled_site_visit': return 10;
+    case 're_assign': return 11;
 
-    default: return "all";
+    default: return 0;
   }
 };
 
-const FilterTableList = ({ navigation, route }) => {
+const FilterSelectTableList = ({ navigation, route }) => {
 
 const [data, setData] = useState([]);
 const [page, setPage] = useState(1);
@@ -53,34 +57,34 @@ const [loading, setLoading] = useState(false);
   const [agentsList, setAgentsList] = useState([]);
 
   const { user, token } = useAuth();
-  const { leadsource ,project,leadType,todate,fromdate ,currentForm} = route.params || {};
-
-
-
+  const { leadType,agent,teamleader } = route.params || {};
+// console.log(teamleader,agent)
   // ✅ Memoize the leadStatus value
   const leadStatus = useMemo(() => mapLeadTypeToStatus(leadType), [leadType]);
-//  console.log(leadStatus)
+
   const debounceRef = useRef();
 
 
-useEffect(() => {
-  navigation.setOptions({
-    headerLeft: () => (
-      <TouchableOpacity
-        onPress={() =>
-          navigation.navigate('TabNavigator', {
-            screen: 'HomeTab',
-          })
-        }
-        style={{ marginLeft: 15 }}
-      >
-        <Ionicons name="home-outline" size={24} color="#000" />
-      </TouchableOpacity>
-    ),
 
-    headerTitle: '',
-  });
-}, [navigation]);
+
+//   useEffect(() => {
+//   navigation.setOptions({
+//     headerLeft: () => (
+//       <TouchableOpacity
+//         onPress={() =>
+//           navigation.navigate('TabNavigator', {
+//             screen: 'HomeTab',
+//           })
+//         }
+//         style={{ marginLeft: 15 }}
+//       >
+//         <Ionicons name="home-outline" size={24} color="#000" />
+//       </TouchableOpacity>
+//     ),
+
+//     headerTitle: 'Leads',
+//   });
+// }, [navigation]);
 
   // Debounced search query
   useEffect(() => {
@@ -91,7 +95,12 @@ useEffect(() => {
     return () => clearTimeout(debounceRef.current);
   }, [searchQuery]);
 
- 
+  // Fetch data on mount and when user or leadStatus changes
+  useEffect(() => {
+    if (user?.user_id && token) {
+      leadData();
+    }
+  }, [user, token, leadStatus]);
 
   // Fetch data when screen is focused
 useFocusEffect(
@@ -107,28 +116,14 @@ useFocusEffect(
  const leadData = async (pageNumber = 1) => {
   setLoading(true);
 
-const payload = {
-  lead_status: leadStatus,
-  user_id: user.user_id,
-  type: currentForm,
-  tl_id: "",
-  agent_id: "",
-  project:project,
-  lead_source: leadsource,
-  from_date: fromdate,
-  to_date: todate,
-};
-// console.log("post data",payload)
-
   try {
-   
-
-
     const res = await ApiClient.post(
-
-      `/filter-report?page=${pageNumber}`,
-     payload,
-        
+      `/get-filter-data?page=${pageNumber}`,
+      {user_id: user.user_id,
+        lead_status: leadStatus,
+        tl_id:teamleader,
+        agent_id:agent
+      },
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -184,7 +179,7 @@ const handlePrev = () => {
 
   const filteredData = useMemo(() => {
     const query = debouncedQuery.toLowerCase();
-   
+    // console.log(leadStatus)
     return data.filter((item) => {
       const name = typeof item.name === 'string' ? item.name.toLowerCase() : '';
       const contact = typeof item.contact === 'string' ? item.contact.toLowerCase() : '';
@@ -228,6 +223,7 @@ const handlePrev = () => {
           />
         </TouchableOpacity>
 
+        {Number(!leadStatus) == 0 && (
           <TouchableOpacity
             onPress={() =>
               navigation.navigate('UpdateScreen', { userSearchdata: item.id })
@@ -236,7 +232,7 @@ const handlePrev = () => {
           >
             <Ionicons name="create-outline" size={24} color="red" />
           </TouchableOpacity>
-      
+        )}
       </View>
 
       <View style={styles.desigedtext}>
@@ -262,7 +258,6 @@ const handlePrev = () => {
   );
 
   return (
-    
     <View style={styles.container}>
     
 
@@ -323,7 +318,7 @@ const handlePrev = () => {
   );
 };
 
-export default FilterTableList;
+export default FilterSelectTableList;
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f1f1f1', padding: 10 },

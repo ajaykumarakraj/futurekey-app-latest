@@ -9,6 +9,7 @@ import AddClientScreen from '../screens/AddClientScreen'; // AddClientScreen
 
 import NotificationScreen from '../screens/NotificationScreen';
 import SearchScreen from '../screens/SearchScreen';
+import MainStack from './MainStack';
 
 const Tab = createBottomTabNavigator();
 

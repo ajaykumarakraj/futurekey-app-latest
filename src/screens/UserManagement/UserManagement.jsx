@@ -115,7 +115,7 @@ const UserManagement = ({ navigation }) => {
       </View>
     );
   };
-  console.log(data)
+  // console.log(data)
   return isLoading ? (
     // Show loading indicator while fetching data
     <View style={[styles.container, { justifyContent: "center", alignItems: "center" }]}>

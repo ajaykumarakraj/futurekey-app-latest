@@ -150,13 +150,13 @@ const handlePrev = () => {
 
   // Toggle row expansion
   const handleReadMore = useCallback((id) => {
-    console.log("table", id)
+    // console.log("table", id)
     setExpandedRowId((prevId) => (prevId === id ? null : id));
   }, []);
 
   const filteredData = useMemo(() => {
     const query = debouncedQuery.toLowerCase();
-    console.log(leadStatus)
+    // console.log(leadStatus)
     return data.filter((item) => {
       const name = typeof item.name === 'string' ? item.name.toLowerCase() : '';
       const contact = typeof item.contact === 'string' ? item.contact.toLowerCase() : '';

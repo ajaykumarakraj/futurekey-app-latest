@@ -9,7 +9,7 @@ const Integration = ({ navigation }) => {
   const [loading, setLoading] = useState(true);  // Loading state to show a loading indicator
 
   useEffect(() => {
-    console.log('useEffect triggered');
+    // console.log('useEffect triggered');
     getData();
   }, []);
 
@@ -20,7 +20,7 @@ const Integration = ({ navigation }) => {
           Authorization: 'Bearer 2|laravel_sanctum_5NMXdskxMn7bn6e05Z4MdvQ94GD1FZjw9OZrvyPQ0e57010d'
         }
       });
-      console.log("Data fetched successfully:", res.data);
+      // console.log("Data fetched successfully:", res.data);
 
       // Set the fetched data to state (accessing the `data` field)
       setCustomers(res.data.data || []);  // Now using res.data.data to access customers

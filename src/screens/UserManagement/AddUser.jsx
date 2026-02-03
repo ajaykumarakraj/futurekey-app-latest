@@ -60,7 +60,7 @@ const AddUser = ({ navigation }) => {
         login_device: loginAccess,
         crm_app_access: devicelogin,
       };
-      console.log("post", formData)
+      // console.log("post", formData)
       const res = await ApiClient.post(
         "/add-user",
         formData,
@@ -71,8 +71,8 @@ const AddUser = ({ navigation }) => {
         }
       );
 
-      console.log("Status:", res.status);
-      console.log("Respo:", res.data);
+      // console.log("Status:", res.status);
+      // console.log("Respo:", res.data);
 
       if (res.data.status === 200) {
         Alert.alert("Success", res.data.message || "Client added successfully!");
@@ -98,7 +98,7 @@ const AddUser = ({ navigation }) => {
     }
   }, [role]);
   const getteamLeader = async () => {
-    console.log("run")
+    
     try {
       const resTL = await axios.get("https://api.almonkdigital.in/api/admin/get-team-leader", {
         headers: {
@@ -108,14 +108,14 @@ const AddUser = ({ navigation }) => {
       if (resTL.status === 200) {
 
         setTeamLeaderList(resTL.data.data.map((tl) => ({ key: tl.user_id.toString(), value: tl.name })))
-        console.log(resTL.data.data)
+        // console.log(resTL.data.data)
       }
     } catch (error) {
       console.log(error)
     }
   }
-  console.log(teamLeaderList)
-  console.log(role)
+  // console.log(teamLeaderList)
+  // console.log(role)
   return (
     <ScrollView style={styles.container}>
       {/* <View style={styles.header}>

@@ -19,6 +19,7 @@ import {
 import { AuthProvider } from './src/context/AuthContext';
 import AppNavigator from './src/Navigators/AppNavigator';
 import * as Animatable from 'react-native-animatable';
+import ForceUpdate from './src/component/ForceUpdate';
 // import ApiClient from './src/component/ApiClient'; // Optional
 
 const App = () => {
@@ -100,7 +101,7 @@ const App = () => {
     <AuthProvider>
       <View style={{ flex: 1 }}>
         <AppNavigator />
-
+<ForceUpdate/>
         {notification && (
           <Animatable.View
             animation="slideInDown"

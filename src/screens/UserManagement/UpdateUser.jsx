@@ -61,7 +61,7 @@ const UpdateUserForm = ({ navigation }) => {
 
         if (res.data.status === 200) {
           const user = res.data.data;
-          console.log("get", user)
+          // console.log("get", user)
           setName(user.name || "");
           setPhone(user.phone || "");
           setGender(user.gender || null);
@@ -94,7 +94,7 @@ const UpdateUserForm = ({ navigation }) => {
       crm_app_access: crmAccess,
       login_device: deviceLogin,
     };
-    console.log("send for update", formData)
+    // console.log("send for update", formData)
     try {
       const res = await api.post(`http://api.almonkdigital.in/api/admin/update-user`, formData, {
         headers: {
@@ -112,7 +112,7 @@ const UpdateUserForm = ({ navigation }) => {
       Alert.alert("Error", "Submission failed");
     }
   };
-  console.log(role)
+  // console.log(role)
   return (
     <ScrollView style={styles.container}>
       {/* <Text style={styles.title}>Edit User</Text> */}

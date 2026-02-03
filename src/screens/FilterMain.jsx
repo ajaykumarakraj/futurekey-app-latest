@@ -22,14 +22,9 @@ const FilterForm = ({ navigation }) => {
   const [agent, setAgent] = useState("");
 
 
-    const [dropdownOpen1, setDropdownOpen1] = useState(false);
-    const [dropdownOpen2, setDropdownOpen2] = useState(false);
-
-    const [showFromDate, setShowFromDate] = useState(false);
-    const [showToDate, setShowToDate] = useState(false);
 
     const [leadsourcelist,setLeadsourceList]=useState([])
-    const [leadsource,setLeadsource]=useState("")
+    const [leadsource,setLeadsource]=useState("facebook")
 
     const [leadType,setLeadType]=useState([])
     const [projectList,setProjectList]=useState([])
@@ -97,9 +92,23 @@ useEffect(() => {
     navigation.navigate('filtertable', { leadsource ,project,leadType,fromdate,todate,currentForm});
   };
 
-console.log(teamleader,agent)
+// console.log(teamleader,agent)
 
    const handlSubmitTL = () => {
+   if (!teamleader ) {
+  Alert.alert(
+    "Validation Error",
+    "Please select Team Leader"
+  );
+  return;
+}
+if (!agent) {
+  Alert.alert(
+    "Validation Error",
+    "Please select  Agent"
+  );
+  return;
+}
     navigation.navigate('filterHomeScreen', { leadsource ,project,leadType,fromdate,todate,currentForm, teamleader,agent});
   };
     // date section 
@@ -150,9 +159,9 @@ const fetchRequirements = async () => {
 
 
 
-console.log(user.role)
-console.log(user.name)
-console.log(user)
+// console.log(user.role)
+// console.log(user.name)
+// console.log(user)
     const renderForm = () => {
         switch (currentForm) {
             case "lead":
@@ -307,173 +316,15 @@ console.log(user)
 
             case "form3":
                 return (
-                    <View style={styles.form}>
-                        <Text style={styles.title}>Form 3 - Contact</Text>
-                        <View style={{ zIndex: 2000, marginBottom: 20 }}>
-                            <DropDownPicker
-                                open={dropdownOpen1}
-                                value={form1Data.name}
-                                items={[
-                                    { label: 'Ajay', value: 'Ajay' },
-                                    { label: 'Neha', value: 'Neha' },
-                                    { label: 'Ravi', value: 'Ravi' }
-                                ]}
-                                setOpen={setDropdownOpen1}
-                                setValue={(callback) => {
-                                    const value = callback(form1Data.name);
-                                    setForm1Data({ ...form1Data, name: value });
-                                }}
-                                placeholder="Select Name"
-                                placeholderStyle={styles.placeholder}
-                                style={styles.dropdown}
-                                dropDownContainerStyle={styles.dropdownBox}
-                            />
-                        </View>
-
-                        {/* Email Dropdown */}
-                        <View style={{ zIndex: 1000, marginBottom: 12 }}>
-                            <DropDownPicker
-                                open={dropdownOpen2}
-                                value={form1Data.email}
-                                items={[
-                                    { label: 'ajay@example.com', value: 'ajay@example.com' },
-                                    { label: 'neha@example.com', value: 'neha@example.com' },
-                                    { label: 'ravi@example.com', value: 'ravi@example.com' }
-                                ]}
-                                setOpen={setDropdownOpen2}
-                                setValue={(callback) => {
-                                    const value = callback(form1Data.email);
-                                    setForm1Data({ ...form1Data, email: value });
-                                }}
-                                placeholder="Select Email"
-                                placeholderStyle={styles.placeholder}
-                                style={styles.dropdown}
-                                dropDownContainerStyle={styles.dropdownBox}
-                            />
-                        </View>
-
-                        {/* From & To Dates */}
-                        <View style={styles.datepick}>
-                            <TouchableOpacity onPress={() => setShowFromDate(true)} style={styles.dateButton}>
-                                <Text style={styles.dateText}>From: {form1Data.fromDate.toDateString()}</Text>
-                            </TouchableOpacity>
-                            {showFromDate && (
-                                <DateTimePicker
-                                    value={form1Data.fromDate}
-                                    mode="date"
-                                    display="default"
-                                    onChange={(event, selectedDate) => {
-                                        setShowFromDate(Platform.OS === 'ios');
-                                        if (selectedDate) {
-                                            setForm1Data({ ...form1Data, fromDate: selectedDate });
-                                        }
-                                    }}
-                                />
-                            )}
-
-                            <TouchableOpacity onPress={() => setShowToDate(true)} style={styles.dateButton}>
-                                <Text style={styles.dateText}>To: {form1Data.toDate.toDateString()}</Text>
-                            </TouchableOpacity>
-                            {showToDate && (
-                                <DateTimePicker
-                                    value={form1Data.toDate}
-                                    mode="date"
-                                    display="default"
-                                    onChange={(event, selectedDate) => {
-                                        setShowToDate(Platform.OS === 'ios');
-                                        if (selectedDate) {
-                                            setForm1Data({ ...form1Data, toDate: selectedDate });
-                                        }
-                                    }}
-                                />
-                            )}
-                        </View>
+                    <View >
+                        
                     </View>
                 );
 
             case "form4":
                 return (
-                    <View style={styles.form}>
-                        <Text style={styles.title}>Form 4 - Contact</Text>
-                        <View style={{ zIndex: 2000, marginBottom: 20 }}>
-                            <DropDownPicker
-                                open={dropdownOpen1}
-                                value={form1Data.name}
-                                items={[
-                                    { label: 'Ajay', value: 'Ajay' },
-                                    { label: 'Neha', value: 'Neha' },
-                                    { label: 'Ravi', value: 'Ravi' }
-                                ]}
-                                setOpen={setDropdownOpen1}
-                                setValue={(callback) => {
-                                    const value = callback(form1Data.name);
-                                    setForm1Data({ ...form1Data, name: value });
-                                }}
-                                placeholder="Select Name"
-                                placeholderStyle={styles.placeholder}
-                                style={styles.dropdown}
-                                dropDownContainerStyle={styles.dropdownBox}
-                            />
-                        </View>
-
-                        {/* Email Dropdown */}
-                        <View style={{ zIndex: 1000, marginBottom: 12 }}>
-                            <DropDownPicker
-                                open={dropdownOpen2}
-                                value={form1Data.email}
-                                items={[
-                                    { label: 'ajay@example.com', value: 'ajay@example.com' },
-                                    { label: 'neha@example.com', value: 'neha@example.com' },
-                                    { label: 'ravi@example.com', value: 'ravi@example.com' }
-                                ]}
-                                setOpen={setDropdownOpen2}
-                                setValue={(callback) => {
-                                    const value = callback(form1Data.email);
-                                    setForm1Data({ ...form1Data, email: value });
-                                }}
-                                placeholder="Select Email"
-                                placeholderStyle={styles.placeholder}
-                                style={styles.dropdown}
-                                dropDownContainerStyle={styles.dropdownBox}
-                            />
-                        </View>
-
-                        {/* From & To Dates */}
-                        <View style={styles.datepick}>
-                            <TouchableOpacity onPress={() => setShowFromDate(true)} style={styles.dateButton}>
-                                <Text style={styles.dateText}>From: {form1Data.fromDate.toDateString()}</Text>
-                            </TouchableOpacity>
-                            {showFromDate && (
-                                <DateTimePicker
-                                    value={form1Data.fromDate}
-                                    mode="date"
-                                    display="default"
-                                    onChange={(event, selectedDate) => {
-                                        setShowFromDate(Platform.OS === 'ios');
-                                        if (selectedDate) {
-                                            setForm1Data({ ...form1Data, fromDate: selectedDate });
-                                        }
-                                    }}
-                                />
-                            )}
-
-                            <TouchableOpacity onPress={() => setShowToDate(true)} style={styles.dateButton}>
-                                <Text style={styles.dateText}>To: {form1Data.toDate.toDateString()}</Text>
-                            </TouchableOpacity>
-                            {showToDate && (
-                                <DateTimePicker
-                                    value={form1Data.toDate}
-                                    mode="date"
-                                    display="default"
-                                    onChange={(event, selectedDate) => {
-                                        setShowToDate(Platform.OS === 'ios');
-                                        if (selectedDate) {
-                                            setForm1Data({ ...form1Data, toDate: selectedDate });
-                                        }
-                                    }}
-                                />
-                            )}
-                        </View>
+                    <View >
+                        
                     </View>
                 );
         }

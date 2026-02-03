@@ -226,8 +226,8 @@ const UpdateScreen = ({ route, navigation }) => {
       if (res.data.status === 200) {
 
         const fetchedUser = res.data.data;
-        console.log("run")
-        console.log("all data", fetchedUser)
+        // console.log("run")
+        // console.log("all data", fetchedUser)
         setName(fetchedUser.name)
         setNumber(fetchedUser.contact)
         setSelectedGender(fetchedUser.gender)
@@ -262,7 +262,7 @@ const UpdateScreen = ({ route, navigation }) => {
       });
       if (res.data.status === 200) {
         setData(res.data.data);
-        console.log("get note", res.data.data)
+        // console.log("get note", res.data.data)
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -319,7 +319,7 @@ const UpdateScreen = ({ route, navigation }) => {
         agent: agentid
 
       };
-      console.log("notes data", updatedUser)
+      // console.log("notes data", updatedUser)
       const res = await ApiClient.post(
         "/save-lead-notes",
         updatedUser,
@@ -332,7 +332,7 @@ const UpdateScreen = ({ route, navigation }) => {
         }
       );
 
-      console.log("Success:", res.data);
+      // console.log("Success:", res.data);
       Alert.alert("Success", "Client updated successfully!");
       navigation.goBack();
     } catch (error) {
@@ -370,7 +370,7 @@ const UpdateScreen = ({ route, navigation }) => {
         team_leader: teamLeaderId,
         agent: agentid
       };
-      console.log("post", updatedUser)
+      // console.log("post", updatedUser)
       const res = await ApiClient.post(
         "/save-update-lead-data",
         updatedUser,
@@ -384,7 +384,7 @@ const UpdateScreen = ({ route, navigation }) => {
       );
       // console.log("post res",res)
       if (res.status == 200) {
-        console.log("Success:", res.data);
+        // console.log("Success:", res.data);
         Alert.alert("Success", "Client updated successfully!");
         navigation.goBack();
       }
@@ -404,7 +404,7 @@ const UpdateScreen = ({ route, navigation }) => {
 
 
   const onselectteamleader = async (id) => {
-    console.log("teamlederid", id)
+    // console.log("teamlederid", id)
     setTeamLeaderId(id)
     try {
       const res = await axios.get(`https://api.almonkdigital.in/api/admin/get-agent/${id}`, {
@@ -434,7 +434,7 @@ const UpdateScreen = ({ route, navigation }) => {
         agent: agentid,
         call_captured: "whatsapp"
       }
-      console.log("postkey", postkey)
+      // console.log("postkey", postkey)
       const reswhatsapp = await axios.post("https://api.almonkdigital.in/api/call-capture", postkey, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -461,7 +461,7 @@ const UpdateScreen = ({ route, navigation }) => {
         agent: agentid,
         call_captured: "Call"
       }
-      console.log("postkey", postkey)
+      // console.log("postkey", postkey)
       const reswhatsapp = await axios.post("https://api.almonkdigital.in/api/call-capture", postkey, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -481,7 +481,7 @@ const UpdateScreen = ({ route, navigation }) => {
   return (
     <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
       <View style={styles.container}>
-        <View style={styles.header}>
+        {/* <View style={styles.header}>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={styles.backButton}
@@ -489,7 +489,7 @@ const UpdateScreen = ({ route, navigation }) => {
             <Ionicons name="arrow-back" size={24} color="white" />
           </TouchableOpacity>
           <Text style={styles.headerText}>Customer Details</Text>
-        </View>
+        </View> */}
 
         <View style={styles.switchButtons}>
           <View style={{ width: "50%" }}>

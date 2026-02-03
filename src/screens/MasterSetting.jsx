@@ -78,7 +78,7 @@ const MasterSetting = ({ navigation }) => {
         }
       );
       if (response.status === 200) {
-        console.log("Deleted successfully");
+        // console.log("Deleted successfully");
         Alert.alert("Success", "Item deleted");
         getData(); // refresh data after deletion
       } else {

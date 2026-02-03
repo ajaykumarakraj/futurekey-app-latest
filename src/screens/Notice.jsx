@@ -31,9 +31,9 @@ const Notice = ({ navigation }) => {
   // Function to handle Send button press
   const handleSend = () => {
     // You can add your logic here to send the data (e.g., subject, description, image URI)
-    console.log('Subject:', subject);
-    console.log('Description:', description);
-    console.log('Image URI:', image);
+    // console.log('Subject:', subject);
+    // console.log('Description:', description);
+    // console.log('Image URI:', image);
     alert('Notice sent successfully!');
   };
 
