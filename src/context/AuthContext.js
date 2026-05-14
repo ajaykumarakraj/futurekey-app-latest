@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Keychain from 'react-native-keychain';
-
+import ApiClient from '../component/ApiClient';
 const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
@@ -48,16 +48,33 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
-    // 🔐 Remove token
-    await Keychain.resetGenericPassword();
 
-    // 👤 Remove user data
+try {
+  const payload={
+
+  }
+ const res=await ApiClient.post("/user-logout",payload,{
+headers:{
+ Authorization: `Bearer ${token}`
+}
+ })
+ if(res.status==200){
+ await Keychain.resetGenericPassword();
     await AsyncStorage.removeItem('USER_DATA');
 
+  await AsyncStorage.removeItem('token');
+  
     setToken(null);
     setUser(null);
-  };
+ }
+//  console.log(res.status)
+} catch (error) {
+  console.log(error)
+}
 
+   
+  };
+global.logoutUser = logout;
   return (
     <AuthContext.Provider
       value={{

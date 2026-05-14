@@ -25,7 +25,7 @@ const UpdateUserForm = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [role, setRole] = useState(null);
   const [teamLeaderList, setTeamLeaderList] = useState([]);
-  const [selectedTeamLeader, setSelectedTeamLeader] = useState(null);
+  const [selectedTeamLeader, setSelectedTeamLeader] = useState("");
   const [deviceLogin, setDeviceLogin] = useState(null);
   const [crmAccess, setCrmAccess] = useState(null);
 
@@ -83,6 +83,13 @@ const UpdateUserForm = ({ navigation }) => {
   }, []);
 
   const handleUpdate = async () => {
+     if (role === "3" ) {
+   if(selectedTeamLeader=="NA"||selectedTeamLeader==""){
+     Alert.alert("Validation Error", "Team Leader is required for this role");
+       return;
+   }
+  
+  }
     const formData = {
       user_id: userdata.user_id,
       name,

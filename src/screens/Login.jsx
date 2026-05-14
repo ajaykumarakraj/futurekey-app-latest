@@ -14,16 +14,18 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   ImageBackground,
+  ActivityIndicator 
 } from "react-native";
 
 import Icon from "react-native-vector-icons/Ionicons";
+
 import ApiClient from "../component/ApiClient";
 
 const { width, height } = Dimensions.get("window");
 
 const Login = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
-
+  const [loading, setLoading] = useState(false);
   // Simple alert function
   const showAlert = (title, message) => {
     Alert.alert(title, message);
@@ -35,7 +37,9 @@ const Login = ({ navigation }) => {
       showAlert("Invalid", "Please enter a valid 10 digit number");
       return;
     }
+ if (loading) return;
 
+    setLoading(true);
     try {
       const response = await ApiClient.post("/send-login-otp", {
         mobile: sanitizedNumber,
@@ -55,7 +59,10 @@ const Login = ({ navigation }) => {
     } catch (error) {
       console.error(error);
       showAlert(error, "Something went wrong");
-    }
+    }finally {
+    
+    setLoading(false);
+  }
   };
 const shareApp = async () => {
   try {
@@ -121,10 +128,21 @@ const handleSignUp=()=>{
                   </View>
 
                   {/* Button */}
-                  <TouchableOpacity style={styles.button} onPress={sendOTP}>
-                    <Icon name="paper-plane-outline" size={18} color="#fff" />
-                    <Text style={styles.buttonText}>Send OTP</Text>
-                  </TouchableOpacity>
+              <TouchableOpacity
+  style={styles.button}
+  onPress={sendOTP}
+  disabled={loading}
+>
+  {loading ? (
+    <ActivityIndicator color="#fff" style={{ marginRight: 8 }} />
+  ) : (
+    <Icon name="paper-plane-outline" size={18} color="#fff" style={{ marginRight: 8 }} />
+  )}
+  
+  <Text style={styles.buttonText}>
+    Send OTP
+  </Text>
+</TouchableOpacity>
               <View style={styles.box}>
                 <TouchableOpacity style={styles.shareButton} onPress={handleSignUp}>
   <Icon name="person-add-outline" size={20} color="#003961" />

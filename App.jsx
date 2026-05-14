@@ -10,6 +10,8 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DeviceInfo from 'react-native-device-info';
 import { getApp } from '@react-native-firebase/app';
+import { CommonActions } from '@react-navigation/native';
+import { navigationRef } from './src/RootNavigation';
 import {
   getMessaging,
   getToken,
@@ -97,6 +99,26 @@ const App = () => {
     };
   }, []);
 
+
+  // for autologout 
+useEffect(() => {
+
+  global.logout = async () => {
+
+    await AsyncStorage.removeItem('token');
+
+    if (navigationRef.isReady()) {
+
+      navigationRef.reset({
+        index: 0,
+        routes: [{ name: 'Auth' }],
+      });
+
+    }
+
+  };
+
+}, []);
   return (
     <AuthProvider>
       <View style={{ flex: 1 }}>

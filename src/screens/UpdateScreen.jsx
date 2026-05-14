@@ -1212,44 +1212,7 @@ const notcomplete = () => {
 )}
   
 
-            {/* <Text style={styles.label}>House Visit Completed</Text>
-            <TouchableOpacity onPress={() => setShowHousePicker(true)} style={styles.dateButton}>
-              <Text style={[styles.dateText, !houseVisitDate && styles.placeholder]}>{renderDateText(houseVisitDate)}</Text>
-            </TouchableOpacity>
-            {showHousePicker && (
-              <DateTimePicker
-                value={houseVisitDate || new Date()}
-                mode="date"
-                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                onChange={handleDateChange(setHouseVisitDate, setShowHousePicker)}
-              />
-            )} */}
-
-            {/* <Text style={styles.label}>Office Visit Completed</Text>
-            <TouchableOpacity onPress={() => setShowOfficePicker(true)} style={styles.dateButton}>
-              <Text style={[styles.dateText, !officeVisitDate && styles.placeholder]}>{renderDateText(officeVisitDate)}</Text>
-            </TouchableOpacity>
-            {showOfficePicker && (
-              <DateTimePicker
-                value={officeVisitDate || new Date()}
-                mode="date"
-                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                onChange={handleDateChange(setOfficeVisitDate, setShowOfficePicker)}
-              />
-            )} */}
-
-            {/* <Text style={styles.label}>Mid Way Visit Completed</Text>
-            <TouchableOpacity onPress={() => setShowMidwayPicker(true)} style={styles.dateButton}>
-              <Text style={[styles.dateText, !midwayVisitDate && styles.placeholder]}>{renderDateText(midwayVisitDate)}</Text>
-            </TouchableOpacity>
-            {showMidwayPicker && (
-              <DateTimePicker
-                value={midwayVisitDate || new Date()}
-                mode="date"
-                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                onChange={handleDateChange(setMidwayVisitDate, setShowMidwayPicker)}
-              />
-            )} */}
+          
 
             <Text style={styles.label}>Call Status</Text>
             <View style={styles.pickerWrapper}>

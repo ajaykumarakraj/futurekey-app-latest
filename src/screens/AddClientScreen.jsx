@@ -52,18 +52,7 @@ const AddClientScreen = ({ navigation }) => {
     { value: "Customer" },
   ];
 
-  // const leadsourceData = [
-  //   { value: "Facebook" },
-  //   { value: "Instagram" },
-  // ];
-
-  // const projectData = [
-  //   { key: "1", value: "Golden Enclave" },
-  //   { key: "2", value: "Golden Enclave 23k Square" },
-  //   { key: "3", value: "Golden Home" },
-  //   { key: "4", value: "Golden Home 3 Lac" },
-  // ];
-
+  
   const onRefresh = () => {
     setRefreshing(true);
     fetchInitialData();
@@ -189,16 +178,22 @@ const AddClientScreen = ({ navigation }) => {
         team_leader: teamleader,
         agent,
       };
-      // console.log(formData)
+      console.log(formData)
       const res = await ApiClient.post("/create-customer", formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
+        // console.log("response",res)
+if(res.data.status==200){
 
-      Alert.alert("Success", "Client added successfully!");
+  Alert.alert("Success",res.data.message);
       navigation.goBack();
+}else{
+  Alert.alert("failed" ,res.data.message);
+}
+    
     } catch (error) {
       console.error("Error posting data:", error);
       Alert.alert("Error", "Failed to add client. Please try again.");
@@ -214,8 +209,8 @@ const AddClientScreen = ({ navigation }) => {
         <View style={styles.pickerWrapper}><SelectList data={genderData} setSelected={setSelectedGender} placeholder="Gender" search={false} /></View>
 
         <Text style={styles.sectionHeader}>Contact Details</Text>
-        <TextInput style={styles.input} value={number} onChangeText={setNumber} placeholder="Mobile No." keyboardType="numeric" placeholderTextColor="#000" />
-        <TextInput style={styles.input} value={altnumber} onChangeText={setAltnumber} placeholder="Alt Mobile No." keyboardType="numeric" placeholderTextColor="#000" />
+        <TextInput style={styles.input}  maxLength={10} value={number} onChangeText={setNumber} placeholder="Mobile No." keyboardType="numeric" placeholderTextColor="#000" />
+        <TextInput style={styles.input}  maxLength={10} value={altnumber} onChangeText={setAltnumber} placeholder="Alt Mobile No." keyboardType="numeric" placeholderTextColor="#000" />
 
         <Text style={styles.sectionHeader}>Location</Text>
         <View style={styles.pickerWrapper}><SelectList data={statedata} setSelected={setSelectedState} placeholder="Select State" search={false} /></View>

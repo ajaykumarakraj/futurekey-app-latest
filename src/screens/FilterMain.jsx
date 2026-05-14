@@ -67,14 +67,12 @@ useEffect(() => {
  const handleTeamLeaderSelect = async (id) => {
   if (!id) return;
 
-  setTeamleader(id);
-  
-
+  setTeamleader(id); 
   try {
     const res = await axios.get(
       `https://api.almonkdigital.in/api/admin/get-agent/${id}`,
       {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}`},
       }
     );
 
