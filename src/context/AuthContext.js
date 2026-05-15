@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }) => {
 
 try {
   const payload={
-
+user_id:user?.user_id
   }
  const res=await ApiClient.post("/user-logout",payload,{
 headers:{
@@ -75,6 +75,9 @@ headers:{
    
   };
 global.logoutUser = logout;
+
+
+console.log(user?.user_id)
   return (
     <AuthContext.Provider
       value={{
