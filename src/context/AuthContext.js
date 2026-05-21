@@ -61,7 +61,7 @@ headers:{
  if(res.status==200){
  await Keychain.resetGenericPassword();
     await AsyncStorage.removeItem('USER_DATA');
-
+ await AsyncStorage.removeItem('FILTER_DATA');
   await AsyncStorage.removeItem('token');
   
     setToken(null);
@@ -77,7 +77,7 @@ headers:{
 global.logoutUser = logout;
 
 
-console.log(user?.user_id)
+// console.log(user?.user_id)
   return (
     <AuthContext.Provider
       value={{

@@ -50,10 +50,10 @@ const HomeScreen = ({ navigation }) => {
           Authorization: `Bearer ${token}`,
         },
       });
-
+console.log(res.data)
       if (res.data.status === 200) {
         setData(res.data.data);
-        // console.log('Dashboard data:', res.data.data);
+        console.log('Dashboard data:', res.data.data);
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -63,7 +63,7 @@ const HomeScreen = ({ navigation }) => {
   const goToTable = (leadType) => {
     navigation.navigate('Table', { leadType });
   };
-
+console.log(data)
   return (
     <ScrollView
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
@@ -73,9 +73,16 @@ const HomeScreen = ({ navigation }) => {
           {user?.role === "Admin" && (
             <LeadBox title="Fresh Leads" count={data.fresh_lead} icon={require('../../Assets/icons/Freshlead.png')} onPress={() => goToTable('fresh_lead')} />
           )}
-          <LeadBox title="New Leads" count={data.new_lead} icon={require('../../Assets/icons/Newlead.png')} onPress={() => goToTable('new_lead')} />
+           {user?.role === "Admin" && (
+          <LeadBox title="Archived Leads" count={data.archived_lead} icon={require('../../Assets/icons/location.png')} onPress={() => goToTable('archived_lead')} />
+          
+              )}
+         
         </View>
-
+ <View style={styles.row}>
+       <LeadBox title="New Leads" count={data.new_lead} icon={require('../../Assets/icons/Newlead.png')} onPress={() => goToTable('new_lead')} />
+      <LeadBox title="Converted" count={data.converted} icon={require('../../Assets/icons/Converted.png')} onPress={() => goToTable('converted')} />
+        </View>
         <View style={styles.row}>
           <LeadBox title="Hot Leads" count={data.hot_lead} icon={require('../../Assets/icons/hot-deal.png')} onPress={() => goToTable('hot_lead')} />
           <LeadBox title="Today's Site Visits" count={data.today_site_visit} icon={require('../../Assets/icons/map.png')} onPress={() => goToTable('today_site_visit')} />
@@ -92,21 +99,15 @@ const HomeScreen = ({ navigation }) => {
         </View>
 
         <View style={styles.row}>
-          <LeadBox title="In Process Leads" count={data.in_process} icon={require('../../Assets/icons/progress.png')} onPress={() => goToTable('in_process')} />
+          <LeadBox title="Upcoming Followups" count={data.upcoming_follow_up} icon={require('../../Assets/icons/progress.png')} onPress={() => goToTable('upcoming_follow_up')} />
           <LeadBox title="Complete Site Visit" count={data.completed_site_visit} icon={require('../../Assets/icons/Completesitevisit.png')} onPress={() => goToTable('completed_site_visit')} />
              
         </View>
         <View style={styles.row}>
         <LeadBox title="Reassign" count={data.re_assign} icon={require('../../Assets/icons/Reassign.png')} onPress={() => goToTable('re_assign')} />
-        <LeadBox title="Converted" count={data.converted} icon={require('../../Assets/icons/Converted.png')} onPress={() => goToTable('converted')} />
+       <LeadBox title="In Process Leads" count={data.in_process} icon={require('../../Assets/icons/progress.png')} onPress={() => goToTable('in_process')} />
         </View>
-          <View style={styles.row}>
-       {user?.role === "Admin" && (
-          <LeadBox title="Archived Leads" count={data.archived_lead} icon={require('../../Assets/icons/location.png')} onPress={() => goToTable('archived_lead')} />
-          
-              )}
-     
-        </View>
+         
         
       </View>
     </ScrollView>

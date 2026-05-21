@@ -39,6 +39,7 @@ const mapLeadTypeToStatus = (type) => {
     case 'scheduled_site_visit': return 10;
     case 're_assign': return 11;
  case 'completed_site_visit': return 12;
+ case 'upcoming_follow_up':return 13;
     default: return 0;
   }
 };
@@ -126,13 +127,16 @@ useFocusEffect(
   setLoading(true);
 
   try {
-    const res = await ApiClient.post(
-      `/get-filter-data?page=${pageNumber}`,
-      {user_id: user.user_id,
+    const payload={
+        user_id: user.user_id,
         lead_status: leadStatus,
         tl_id:teamleader,
         agent_id:agent
-      },
+    }
+    console.log(payload,"post")
+    const res = await ApiClient.post(
+      `/get-filter-data?page=${pageNumber}`,
+      payload,
       {
         headers: {
           Authorization: `Bearer ${token}`,

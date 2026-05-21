@@ -31,8 +31,8 @@ const [agentName, setAgentName] = useState("");
     const [projectList,setProjectList]=useState([])
     const [project,setProject]=useState("")
 // console.log(teamleaderList,Teamleadername)
-const LeadType=[{value:"New Lead"},{value:"InProcess Lead"},{value:"Hot Lead"},{value:"Archived Lead"},{value:"Converted Lead"},{value:"Reassign Lead"}]
-// console.log(project,"project")
+const LeadType=[{value:"New Lead"},{value:"InProcess Lead"},{value:"Hot Lead"},{value:"Archived Lead"},{value:"Converted Lead"},{value:"Reassign Lead"},{value:"Follow Up"}]
+// console.log(fromDate,"project")
 
 // team Leader and agent list api 
   useEffect(() => {      
@@ -100,19 +100,19 @@ const handlSubmit = async () => {
     leadsource,
     project,
     leadType,
-    fromDate,
-    toDate,
+    fromDate:fromdate,
+    toDate:todate,
     currentForm
   };
 
-  // await AsyncStorage.setItem('FILTER_DATA', JSON.stringify(filterData));
-await AsyncStorage.removeItem('FILTER_DATA');
+   await AsyncStorage.setItem('FILTER_DATA', JSON.stringify(filterData));
+// await AsyncStorage.removeItem('FILTER_DATA');
   navigation.navigate('filtertable', filterData);
   // console.log(filterData)
 };
 
 
-// console.log(teamleader,agent)
+// console.log(fromDate)
 
   const handlSubmitTL = async () => {
   if (!teamleader) {
@@ -128,15 +128,15 @@ await AsyncStorage.removeItem('FILTER_DATA');
    leadsource,
   project,
   leadType,
-  fromDate,
-  toDate,
+  fromDate:fromdate,
+  toDate:toDate,
   currentForm,
-  teamleader,
+  teamleader: teamleader,
   teamleaderName: Teamleadername,
   agent,
   agentName
   };
-
+// console.log(filterData,"ihijdhsf")
   await AsyncStorage.setItem('FILTER_DATA', JSON.stringify(filterData));
 
   navigation.navigate('filterHomeScreen', filterData);
@@ -149,12 +149,14 @@ useEffect(() => {
 }, []);
 
 const loadSavedFilters = async () => {
+  console.log("run savedata")
   try {
     const savedData = await AsyncStorage.getItem('FILTER_DATA');
-// console.log(savedData,"savedData")
+    //  const savedData = await AsyncStorage.removeItem('FILTER_DATA');
+console.log(savedData,"savedData")
     if (savedData) {
       const parsedData = JSON.parse(savedData);
-// console.log(parsedData.leadsource)
+// console.log(parsedData.leadsource) 
       setLeadsource(parsedData.leadsource || "");
       setProject(parsedData.project || "");
       setLeadType(parsedData.leadType || "");
@@ -179,6 +181,7 @@ const loadSavedFilters = async () => {
 
 const fromdate=formatDate(fromDate)
 const todate=formatDate(toDate)
+console.log(fromdate,todate,"to date")
 
 const renderDateText = (date) => date ? date.toLocaleDateString() : 'Select date';
 
@@ -220,7 +223,7 @@ const fetchRequirements = async () => {
 
 
 // console.log(user.role)
-// console.log(user.name)
+// console.log(user)
 // console.log(Teamleadername,"leadType")
     const renderForm = () => {
         switch (currentForm) {
@@ -295,7 +298,7 @@ const fetchRequirements = async () => {
                         {/* <Text style={styles.title}>Form 1 - Basic</Text> */}
 <View
   style={styles.pickerWrapper}
-  pointerEvents={user.role === "Team Leader" ? "none" : "auto"}
+  pointerEvents={user?.role === "Team Leader" ? "none" : "auto"}
 >
 <SelectList
   data={teamleaderList}
@@ -305,7 +308,7 @@ const fetchRequirements = async () => {
     setTeamleadername(selectedTL?.value || "");
     handleTeamLeaderSelect(id);
   }}
-  placeholder={Teamleadername || user.name || "Team Leader"}
+  placeholder={Teamleadername||user?.name || "Team Leader"}
   search={true}
   inputStyles={{ color: "black" }}
   dropdownTextStyles={{ color: "black" }}

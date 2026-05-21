@@ -14,7 +14,9 @@ ApiClient.interceptors.response.use(
   async error => {
 
     if (error.response?.status === 401) {
-
+ await AsyncStorage.removeItem('USER_DATA');
+ await AsyncStorage.removeItem('FILTER_DATA');
+  await AsyncStorage.removeItem('token');
       global.logoutUser?.();
 
     }

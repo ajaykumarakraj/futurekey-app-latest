@@ -32,6 +32,7 @@ const mapLeadTypeToStatus = (type) => {
     case 'Archived Lead': return 4;
     case 'Converted Lead': return 5;   
     case 'Reassign Lead': return 11;
+    case 'Follow Up': return 13;
     default: return "all";
   }
 };
@@ -52,8 +53,8 @@ const [loading, setLoading] = useState(false);
   const [agentsList, setAgentsList] = useState([]);
 
   const { user, token } = useAuth();
-  const { leadsource ,project,leadType,todate,fromdate ,currentForm} = route.params || {};
-
+  const { leadsource ,project,leadType,toDate ,fromDate ,currentForm} = route.params || {};
+console.log("date",leadsource ,project,leadType,toDate ,fromDate ,currentForm)
 const onRefresh = () => {
     setRefreshing(true);
    leadData();
@@ -108,7 +109,7 @@ useFocusEffect(
   }, [user?.user_id, token, leadStatus])
 );
 
-// console.log("lead type",leadStatus)
+ 
   // Fetch lead data from API
  const leadData = async (pageNumber = 1) => {
   setLoading(true);
@@ -121,15 +122,13 @@ const payload = {
   agent_id: "",
   project:project,
   lead_source: leadsource,
-  from_date: fromdate,
-  to_date: todate,
+  from_date: fromDate,
+  to_date: toDate,
 };
-// console.log("post data",payload)
+console.log("post data",payload)
 
   try {
    
-
-
     const res = await ApiClient.post(
 
       `/filter-report?page=${pageNumber}`,

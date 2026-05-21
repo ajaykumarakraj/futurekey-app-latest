@@ -37,7 +37,7 @@ const FilterHomeScreen = ({ navigation ,route}) => {
   const [refreshing, setRefreshing] = useState(false);
   const { user, token } = useAuth();
   const [data, setData] = useState({});
-// console.log(leadsource ,project,leadType,todate,fromdate ,currentForm,teamleader,agent)
+console.log(leadsource ,project,leadType,todate,fromdate ,currentForm,teamleader,agent)
   const onRefresh = () => {
     setRefreshing(true);
     numData(); // ✅ fixed
@@ -100,7 +100,7 @@ const FilterHomeScreen = ({ navigation ,route}) => {
 
       if (res.data.status === 200) {
         setData(res.data.data);
-        // console.log('Dashboard data:', res.data.data);
+        console.log('Dashboard data:', res.data.data);
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -121,10 +121,11 @@ const FilterHomeScreen = ({ navigation ,route}) => {
             <LeadBox title="Fresh Leads" count={data.fresh_lead} icon={require('../../Assets/icons/Freshlead.png')} onPress={() => goToTable('fresh_lead')} />
           )} */}
           <LeadBox title="New Leads" count={data.new_lead} icon={require('../../Assets/icons/Newlead.png')} onPress={() => goToTable('new_lead')} />
+           <LeadBox title="Hot Leads" count={data.hot_lead} icon={require('../../Assets/icons/hot-deal.png')} onPress={() => goToTable('hot_lead')} />
         </View>
 
         <View style={styles.row}>
-          <LeadBox title="Hot Leads" count={data.hot_lead} icon={require('../../Assets/icons/hot-deal.png')} onPress={() => goToTable('hot_lead')} />
+          <LeadBox title="Upcoming Followups" count={data.upcoming_follow_up} icon={require('../../Assets/icons/hot-deal.png')} onPress={() => goToTable('upcoming_follow_up')} />
           <LeadBox title="Today's Site Visits" count={data.today_site_visit} icon={require('../../Assets/icons/map.png')} onPress={() => goToTable('today_site_visit')} />
         </View>
 

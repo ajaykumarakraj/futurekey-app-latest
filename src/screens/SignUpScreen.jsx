@@ -85,6 +85,7 @@ const payload={
             <TextInput
               style={styles.input}
               placeholder="Full Name"
+               placeholderTextColor="#000"
               value={name}
               onChangeText={setName}
             />
@@ -99,6 +100,7 @@ const payload={
               keyboardType="number-pad"
               maxLength={10}
               value={phone}
+              placeholderTextColor="#000"
               onChangeText={(text) =>
                 setMobile(text.replace(/[^0-9]/g, ""))
               }
@@ -113,6 +115,7 @@ const payload={
               placeholder="Email Address"
               keyboardType="email-address"
               value={email}
+              placeholderTextColor="#000"
               onChangeText={setEmail}
             />
           </View>
@@ -124,6 +127,7 @@ const payload={
               style={styles.input}
               placeholder="Company Name"
               value={company}
+              placeholderTextColor="#000"
               onChangeText={setCompany}
             />
           </View>
@@ -134,6 +138,7 @@ const payload={
             <TextInput
               style={styles.input}
               placeholder="City"
+              placeholderTextColor="#000"
               value={city}
               onChangeText={setCity}
             />
@@ -196,7 +201,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     fontSize: 16,
     marginLeft: 10,
-    color: "#333",
+    color: "#000000",
   },
   button: {
     flexDirection: "row",

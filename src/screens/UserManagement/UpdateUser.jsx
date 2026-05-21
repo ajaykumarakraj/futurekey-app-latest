@@ -62,11 +62,11 @@ const UpdateUserForm = ({ navigation }) => {
         if (res.data.status === 200) {
           const user = res.data.data;
           // console.log("get", user)
-          setName(user.name || "");
+          setName(user?.name || "");
           setPhone(user.phone || "");
           setGender(user.gender || null);
           setEmail(user.email || "");
-          setRole(String(user.role));
+          setRole(String(user?.role));
           setSelectedTeamLeader(user.team_leader_name || "");
           setCrmAccess(user.crm_app_access);
           setDeviceLogin(user.login_device);

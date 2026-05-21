@@ -5,7 +5,7 @@ import { SelectList } from 'react-native-dropdown-select-list';
 
 const UpadateMasterSetting = ({ route, navigation }) => {
   const { user } = route.params;
-  const [name, setName] = useState(user.name);
+  const [name, setName] = useState(user?.name);
 
   const [number, setNumber] = useState(user.phoneNumber);
   const [email, setEmail] = useState("");

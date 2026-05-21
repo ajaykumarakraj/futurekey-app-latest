@@ -32,6 +32,7 @@ import { NativeModules } from "react-native";
 
 const UpdateScreen = ({ route, navigation }) => {
   const { WhatsAppBusiness } = NativeModules;
+  const [showCallPopup, setShowCallPopup] = useState(false);
    const [modalVisible, setModalVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   // const { user } = route.params;
@@ -210,7 +211,7 @@ try {
 
   const fetchStates = async () => {
     try {
-      const res = await axios.get("https://api.almonkdigital.in/api/state-list", {
+      const res = await ApiClient.get("/state-list", {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.status === 200) {
@@ -222,7 +223,7 @@ try {
   };
   const fetchRequirements = async () => {
     try {
-      const res = await axios.get("https://api.almonkdigital.in/api/admin/view-master-setting", {
+      const res = await ApiClient.get("/admin/view-master-setting", {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.status === 200) {
@@ -249,7 +250,7 @@ try {
 
   const fetchTeamLeaders = async () => {
     try {
-      const res = await axios.get("https://api.almonkdigital.in/api/admin/get-team-leader", {
+      const res = await ApiClient.get("/admin/get-team-leader", {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.status === 200) {
@@ -271,7 +272,7 @@ try {
         const fetchedUser = res.data.data;
         // console.log("run")
         // console.log("all data", fetchedUser)
-        setName(fetchedUser.name)
+        setName(fetchedUser?.name)
         setNumber(fetchedUser.contact)
         setSelectedGender(fetchedUser.gender)
         setAltnumber(fetchedUser.alt_contact)
@@ -491,8 +492,8 @@ useEffect(() => {
     if (!teamLeaderId) return;
 
     try {
-      const res = await axios.get(
-        `https://api.almonkdigital.in/api/admin/get-agent/${teamLeaderId}`,
+      const res = await ApiClient.get(
+        `/admin/get-agent/${teamLeaderId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -531,8 +532,8 @@ const handleWhatsapp = async () => {
     };
 
     // 🔥 API CALL
-    const reswhatsapp = await axios.post(
-      "https://api.almonkdigital.in/api/call-capture",
+    const reswhatsapp = await ApiClient.post(
+      "/call-capture",
       postkey,
       {
         headers: {
@@ -544,8 +545,8 @@ const handleWhatsapp = async () => {
     if (reswhatsapp.status === 200) {
 
       // 🔥 Number clean karo
-      const phone = number.replace(/[^0-9]/g, "");
-
+     
+ const phone = "91" + number.replace(/[^0-9]/g, "");
       const message = "";
 
       // 🔥 Direct WhatsApp App Open
@@ -559,13 +560,7 @@ const handleWhatsapp = async () => {
     Alert.alert("Error", "WhatsApp not installed or API failed");
   }
 };
-// bussiness whatsapp 
 
-// const handleBussinessWhatsapp = () => {
-
-//   SendIntentAndroid.openApp("com.whatsapp.w4b");
-
-// };
 
 
 const handleBussinessWhatsapp = async () => {
@@ -578,8 +573,8 @@ const handleBussinessWhatsapp = async () => {
       call_captured: "whatsapp"
     };
 // console.log("postkey",postkey)
-    const reswhatsapp = await axios.post(
-      "https://api.almonkdigital.in/api/call-capture",
+    const reswhatsapp = await ApiClient.post(
+      "/call-capture",
       postkey,
       {
         headers: {
@@ -601,54 +596,39 @@ const handleBussinessWhatsapp = async () => {
     console.log("WhatsApp Error:", error);
   }
 };
-// const handleBussinessWhatsapp = () => {
-//   const phone = "91" + number.replace(/[^0-9]/g, "");
-//   const message = "Hello";
-
-//   WhatsAppBusiness.open(phone, encodeURIComponent(message));
-// };
 
 
 
+ const handleCall = async (phoneNumber) => {
+  try {
+    const postkey = {
+      id: userSearchdata,
+      user_id: user.user_id,
+      team_leader: teamLeaderId,
+      agent: agentid,
+      call_captured: "Call",
+    };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-  const handleCall = async () => {
-    try {
-
-      const postkey = {
-        id: userSearchdata,
-        user_id: user.user_id,
-        team_leader: teamLeaderId,
-        agent: agentid,
-        call_captured: "Call"
-      }
-      // console.log("postkey", postkey)
-      const reswhatsapp = await axios.post("https://api.almonkdigital.in/api/call-capture", postkey, {
+    const reswhatsapp = await ApiClient.post(
+      "/call-capture",
+      postkey,
+      {
         headers: {
           Authorization: `Bearer ${token}`,
-        }
-      })
-      if (reswhatsapp.status == 200) {
-
-        const url = `tel:${number}`;
-        Linking.openURL(url);
+        },
       }
-    } catch (error) {
-      console.log(error)
+    );
+
+    if (reswhatsapp.status === 200) {
+      setShowCallPopup(false);
+
+      const url = `tel:${phoneNumber}`;
+      Linking.openURL(url);
     }
+  } catch (error) {
+    console.log(error);
   }
+};
 
 // side compelete or not api 
 // console.log(userSearchdata)
@@ -760,30 +740,6 @@ const notcomplete = () => {
 
 
 
-// console.log(VisitStatus,"VisitStatus")
-//end side compelete or not api 
-
-// show date in visit site 
-
-// useEffect(() => {
-//   if (!VisitStatus) return;
-
-//   let selectedDate = null;
-
-//   if (VisitStatus === "Schedule Site Visit" && VisitDate && VisitDate !== "1970-01-01") {
-//     selectedDate = new Date(VisitDate);
-//   } else if (VisitStatus === "Office Visit" && OfficeDate && OfficeDate !== "1970-01-01") {
-//     selectedDate = new Date(OfficeDate);
-//   } else if (VisitStatus === "House Visit" && HouseDate && HouseDate !== "1970-01-01") {
-//     selectedDate = new Date(HouseDate);
-//   }
-
-//   setSiteVisitDate(selectedDate);
-// }, [VisitStatus, VisitDate, OfficeDate, HouseDate]);
-
-
-
-  // console.log(siteVisitDate,"siteVisitDate")
 
   const sortedTeamLeaderList = [...teamleaderlist].sort((a, b) =>
   a.value.localeCompare(b.value)
@@ -792,17 +748,50 @@ const notcomplete = () => {
 // console.log(user.role)
   return (
     <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+     
       <View style={styles.container}>
-        {/* <View style={styles.header}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.backButton}
-          >
-            <Ionicons name="arrow-back" size={24} color="white" />
-          </TouchableOpacity>
-          <Text style={styles.headerText}>Customer Details</Text>
-        </View> */}
+      
+<Modal
+  transparent
+  visible={showCallPopup}
+  animationType="fade"
+>
+  <View style={styles.modalOverlay}>
+    <View style={styles.modalContainer}>
 
+      <Text style={styles.modalTitle}>
+        Select Number
+      </Text>
+
+      <TouchableOpacity
+        style={styles.callBtn}
+        onPress={() => handleCall(number)}
+      >
+        <Text style={styles.callText}>
+          Main : {number}
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.callBtn}
+        onPress={() => handleCall(altnumber)}
+      >
+        <Text style={styles.callText}>
+          Alt  : {altnumber}
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={() => setShowCallPopup(false)}
+      >
+        <Text style={{ color: "red", textAlign: "center" }}>
+          Cancel
+        </Text>
+      </TouchableOpacity>
+
+    </View>
+  </View>
+</Modal>
         <View style={styles.switchButtons}>
           <View style={{ width: "50%" }}>
             <Button
@@ -822,26 +811,51 @@ const notcomplete = () => {
         </View>
 
         {formMode === "customer" ? (
-          <>
-            <Text style={styles.textlavel}>Name</Text>
+          <> 
+           <View style={styles.halfInput}>
+           <View style={{ flex: 1 }}>
+             <Text style={styles.textlavel}>Name</Text>
             <TextInput
               style={styles.input}
               value={name}
               onChangeText={setName}
               placeholder="Name"
             />
+           </View>
 
-            <Text style={styles.textlavel}>Mobile No.</Text>
+         <View style={{ flex: 1 }}>
+             <Text style={styles.textlavel}>Mobile No.</Text>
             <TextInput
               style={styles.input}
               value={number}
               onChangeText={setNumber}
               placeholder="Mobile No."
               keyboardType="numeric"
-             editable={user.role === "Admin" ? true : false}
+             editable={user?.role === "Admin" ? true : false}
             />
+         </View>
+</View>
 
-            <Text style={styles.textlavel}>Alternate Mobile No.</Text>
+
+<View style={styles.halfInput}>
+   <View style={{ flex: 1 }}>
+    <Text style={styles.textlavel}>Gender</Text>
+            <View style={styles.pickerWrapper}>
+              <SelectList
+              
+                data={genderData}
+                setSelected={setSelectedGender}
+                placeholder={selectedGender}
+                save="value"
+                search={false}
+                defaultValue={selectedGender}
+                 boxStyles={styles.selectBox}
+      dropdownStyles={styles.dropdownStyle}
+              />
+            </View>
+  </View>
+  <View style={{ flex: 1 }}>
+  <Text style={styles.textlavel}>Alternate Mobile No.</Text>
             <TextInput
               style={styles.input}
               value={altnumber}
@@ -849,21 +863,16 @@ const notcomplete = () => {
               placeholder={altnumber}
               keyboardType="numeric"
               placeholderTextColor="#000"
-               editable={user.role === "Admin" ? true : false}
+              //  editable={user.role === "Admin" ? true : false}
             />
+  </View>
+ 
+</View>
+          
 
-            <Text style={styles.textlavel}>Gender</Text>
-            <View style={styles.pickerWrapper}>
-              <SelectList
-                data={genderData}
-                setSelected={setSelectedGender}
-                placeholder={selectedGender}
-                save="value"
-                search={false}
-                defaultValue={selectedGender}
-              />
-            </View>
-            <Text style={styles.textlavel}>State</Text>
+        <View style={styles.halfInput}>
+<View style={{ flex: 1 }}>
+ <Text style={styles.textlavel}>State</Text>
             {/* <View style={styles.pickerWrapper}><SelectList   placeholder="Select State" search={false} /></View> */}
             <View style={styles.pickerWrapper}>
               <SelectList
@@ -874,9 +883,13 @@ const notcomplete = () => {
                 save="value"
                 search={false}
                 defaultValue={selectedState}
+                  boxStyles={styles.selectBox}
+      dropdownStyles={styles.dropdownStyle}
               />
             </View>
-            <Text style={styles.textlavel}>City</Text>
+</View>
+<View style={{ flex: 1 }}>
+<Text style={styles.textlavel}>City</Text>
             <TextInput
               style={styles.input}
               value={selectedCity}
@@ -886,6 +899,11 @@ const notcomplete = () => {
               placeholderTextColor="#000"
             />
 
+</View>
+        </View>
+           
+            <View style={styles.halfInput}>
+              <View style={{ flex: 1 }}>
 
             <Text style={styles.textlavel}>Customer Type</Text>
             <View style={styles.pickerWrapper}>
@@ -896,10 +914,14 @@ const notcomplete = () => {
                 save="value"
                 search={false}
                 defaultValue={selectCustomer}
+                  boxStyles={styles.selectBox}
+      dropdownStyles={styles.dropdownStyle}
               />
             </View>
 
-            <Text style={styles.textlavel}>Requirement</Text>
+              </View>
+              <View style={{ flex: 1 }}>
+ <Text style={styles.textlavel}>Requirement</Text>
             <View style={styles.pickerWrapper}>
               <SelectList
                 data={requireList}
@@ -908,8 +930,14 @@ const notcomplete = () => {
                 save="value"
                 search={false}
                 defaultValue={requirement}
+                  boxStyles={styles.selectBox}
+      dropdownStyles={styles.dropdownStyle}
               />
             </View>
+              </View>
+            </View>
+
+           
 
             <Text style={styles.textlavel}>Lead Source</Text>
             <View style={styles.pickerWrapper}>
@@ -920,6 +948,8 @@ const notcomplete = () => {
                 save="value"
                 search={false}
                 defaultValue={leadSource}
+                  boxStyles={styles.selectBox}
+      dropdownStyles={styles.dropdownStyle}
               />
             </View>
 
@@ -932,10 +962,14 @@ const notcomplete = () => {
                 save="value"
                 search={false}
                 defaultValue={project}
+                  boxStyles={styles.selectBox}
+      dropdownStyles={styles.dropdownStyle}
               />
             </View>
+<View style={styles.halfInput}>
 
-            <Text style={styles.textlavel}>Team Leader</Text>
+  <View style={{ flex: 1 }}>
+  <Text style={styles.textlavel}>Team Leader</Text>
 
             <View style={styles.pickerWrapper}>
               {(user?.role === "Agent" || user?.role === "Team Leader") ? (
@@ -948,10 +982,14 @@ const notcomplete = () => {
                   // save="value"
                   search={false}
                   defaultValue={teamLeader}
+                    boxStyles={styles.selectBox}
+      dropdownStyles={styles.dropdownStyle}
                 />
               )}
             </View>
-            <Text style={styles.textlavel}>Agent</Text>
+  </View>
+  <View style={{ flex: 1 }}>
+ <Text style={styles.textlavel}>Agent</Text>
             <View style={styles.pickerWrapper}>
               {user?.role === "Agent" ? (
                 <Text style={styles.disabledText}>{agentget || "N/A"}</Text>
@@ -963,9 +1001,15 @@ const notcomplete = () => {
                   // save="value"
                   search={false}
                   defaultValue={agentget}
+                    boxStyles={styles.selectBox}
+      dropdownStyles={styles.dropdownStyle}
                 />
               )}
             </View>
+  </View>
+</View>
+          
+           
 
 
             {loading ? (
@@ -1053,12 +1097,20 @@ const notcomplete = () => {
                     style={{ width: 30, height: 30 }}
                   />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={handleCall}>
+                {/* <TouchableOpacity onPress={handleCall}>
                   <Image
                     source={require('../../Assets/icons/phone-call.png')}
                     style={{ width: 30, height: 30 }}
                   />
-                </TouchableOpacity></View>
+                </TouchableOpacity> */}
+                
+                <TouchableOpacity onPress={() => setShowCallPopup(true)}>
+  <Image
+    source={require('../../Assets/icons/phone-call.png')}
+    style={{ width: 30, height: 30 }}
+  />
+</TouchableOpacity>
+                </View>
             </View>
 
             <TextInput
@@ -1212,7 +1264,7 @@ const notcomplete = () => {
 )}
   
 
-          
+        
 
             <Text style={styles.label}>Call Status</Text>
             <View style={styles.pickerWrapper}>
@@ -1257,7 +1309,10 @@ const notcomplete = () => {
             )
 
             }
-            <Text style={styles.label}>Last Call Time</Text>
+
+              <View style={styles.halfInput}>
+            <View style={{ flex: 1 }}>
+               <Text style={styles.label}>Last Call Time</Text>
             <View style={styles.pickerWrapper}>
               <SelectList
                 data={getActionOptions()}
@@ -1266,13 +1321,13 @@ const notcomplete = () => {
                 placeholder="Select Last Call Time"
                 save="value"
                 search={false}
+                
               // defaultOption={{ key: '0', value: lastCall }}  // if using default
               />
             </View>
-
-
-
-            <Text style={styles.label}>Lead Status</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+ <Text style={styles.label}>Lead Status</Text>
             <View style={styles.pickerWrapper}>
               <SelectList
                 data={leadstatus}
@@ -1283,6 +1338,13 @@ const notcomplete = () => {
                 defaultValue={lead}
               />
             </View>
+            </View>
+          </View>
+           
+
+
+
+           
             <TouchableOpacity onPress={handleSaveNote} style={[styles.dateButton, styles.saveButton]}>
               <Text style={[styles.dateText, { color: 'white', textAlign: 'center' }]}>Save</Text>
             </TouchableOpacity>
@@ -1320,18 +1382,19 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: "white",
-    padding: 12,
+    padding: 15,
     borderRadius: 10,
     marginBottom: 15,
-    fontSize: 11,
+    fontSize: 13,
     elevation: 3,
   },
   pickerWrapper: {
     backgroundColor: "white",
     borderRadius: 10,
-    marginBottom: 15,
+    // marginBottom: 15,
     elevation: 3,
     overflow: "hidden",
+    padding:0
   },
   button: {
     backgroundColor: "#003961",
@@ -1438,9 +1501,9 @@ const styles = StyleSheet.create({
   placeholder: {
     color: "#999",
   },
-  pickerWrapper: {
-    marginTop: 10,
-  },
+  // pickerWrapper: {
+  //   marginTop: 10,
+  // },
   saveButton: {
     marginTop: 30,
     marginBottom: 40,
@@ -1599,7 +1662,76 @@ completed: {
 
 pending: {
   color: "orange"
-}
+},
+halfInput: {
+ 
+  display: "flex",
+  flexDirection: "row",
+  gap: 10
+
+},
+halfField: {
+  flex: 1,
+  zIndex: 5000,
+},
+
+pickerWrapper: {
+  position: "relative",
+},
+
+halfInput: {
+  flexDirection: "row",
+  gap: 10,
+  marginBottom: 15,
+},
+
+selectBox: {
+  borderRadius: 10,
+  borderColor: "#ccc",
+  height: 50,
+  alignItems: "center",
+},
+
+dropdownStyle: {
+  position: "absolute",
+  top: 52,
+  width: "100%",
+  backgroundColor: "#fff",
+  zIndex: 5000,
+  elevation: 10,
+},
+modalOverlay: {
+  flex: 1,
+  backgroundColor: "rgba(0,0,0,0.5)",
+  justifyContent: "center",
+  alignItems: "center",
+},
+
+modalContainer: {
+  width: "80%",
+  backgroundColor: "#fff",
+  borderRadius: 10,
+  padding: 20,
+},
+
+modalTitle: {
+  fontSize: 18,
+  fontWeight: "bold",
+  marginBottom: 15,
+  textAlign: "center",
+},
+
+callBtn: {
+  padding: 12,
+  backgroundColor: "#003961",
+  borderRadius: 8,
+  marginBottom: 10,
+},
+
+callText: {
+  color: "#fff",
+  textAlign: "center",
+},
 });
 
 
