@@ -11,7 +11,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import ApiClient from '../component/ApiClient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const HomeScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const { user, token } = useAuth();
@@ -63,7 +63,7 @@ console.log(res.data)
   const goToTable = (leadType) => {
     navigation.navigate('Table', { leadType });
   };
-console.log(data)
+// console.log(data)
   return (
     <ScrollView
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
@@ -99,7 +99,7 @@ console.log(data)
         </View>
 
         <View style={styles.row}>
-          <LeadBox title="Upcoming Followups" count={data.upcoming_follow_up} icon={require('../../Assets/icons/progress.png')} onPress={() => goToTable('upcoming_follow_up')} />
+          <LeadBox title="Upcoming Followups" count={data.upcoming_follow_up} icon={require('../../Assets/icons/upcomingfollow.png')} onPress={() => goToTable('upcoming_follow_up')} />
           <LeadBox title="Complete Site Visit" count={data.completed_site_visit} icon={require('../../Assets/icons/Completesitevisit.png')} onPress={() => goToTable('completed_site_visit')} />
              
         </View>

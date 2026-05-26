@@ -54,7 +54,7 @@ const [loading, setLoading] = useState(false);
 
   const { user, token } = useAuth();
   const { leadsource ,project,leadType,toDate ,fromDate ,currentForm} = route.params || {};
-console.log("date",leadsource ,project,leadType,toDate ,fromDate ,currentForm)
+// console.log("date",leadsource ,project,leadType,toDate ,fromDate ,currentForm)
 const onRefresh = () => {
     setRefreshing(true);
    leadData();

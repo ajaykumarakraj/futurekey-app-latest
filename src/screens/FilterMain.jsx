@@ -129,7 +129,7 @@ const handlSubmit = async () => {
   project,
   leadType,
   fromDate:fromdate,
-  toDate:toDate,
+  toDate:todate,
   currentForm,
   teamleader: teamleader,
   teamleaderName: Teamleadername,
@@ -316,9 +316,7 @@ const fetchRequirements = async () => {
   searchPlaceholderTextColor="black"
 />
 </View>
-
-
-        <View style={styles.pickerWrapper}><SelectList
+  <View style={styles.pickerWrapper}><SelectList
   data={agentList}
   setSelected={(id) => {
     const selectedAgent = agentList.find(a => a.key === id);
@@ -332,11 +330,11 @@ const fetchRequirements = async () => {
                         <View style={styles.pickerWrapper}><SelectList data={leadsourcelist} setSelected={setLeadsource} placeholder={leadsource||"Select Lead Source"} search={false} /></View>
 
                        {/* Project Dropdown */}
-                        <View style={styles.pickerWrapper}><SelectList data={projectList} setSelected={setProject} placeholder={project||"Select Project"} search={false} /></View>
+                        {/* <View style={styles.pickerWrapper}><SelectList data={projectList} setSelected={setProject} placeholder={project||"Select Project"} search={false} /></View> */}
                        {/* lead type  */}
-                        <View style={styles.pickerWrapper}><SelectList data={LeadType} setSelected={setLeadType} placeholder={leadType||"Select Lead Status"} search={false} /></View>
+                        {/* <View style={styles.pickerWrapper}><SelectList data={LeadType} setSelected={setLeadType} placeholder={leadType||"Select Lead Status"} search={false} /></View> */}
  {/* Date Pickers */}
-    <View style={styles.datesec}>
+    {/* <View style={styles.datesec}>
 
   <View style={styles.dateBox}>
     <Text style={styles.label}>From Date</Text>
@@ -380,7 +378,7 @@ const fetchRequirements = async () => {
     )}
   </View>
 
-</View>
+</View> */}
   <TouchableOpacity style={styles.submitButton} onPress={handlSubmitTL}>
                 <Text style={styles.submitText} >Submit</Text>
             </TouchableOpacity>

@@ -16,7 +16,7 @@ import {
 } from "react-native";
 import Clipboard from "@react-native-clipboard/clipboard";
 import SendIntentAndroid from "react-native-send-intent";
-// import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -28,7 +28,6 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
 import { RefreshControl } from 'react-native';
 import { NativeModules } from "react-native";
-
 
 const UpdateScreen = ({ route, navigation }) => {
   const { WhatsAppBusiness } = NativeModules;
@@ -822,18 +821,30 @@ const notcomplete = () => {
               placeholder="Name"
             />
            </View>
+<View style={{ flex: 1 }}>
+  <Text style={styles.textlavel}>Mobile No.</Text>
 
-         <View style={{ flex: 1 }}>
-             <Text style={styles.textlavel}>Mobile No.</Text>
-            <TextInput
-              style={styles.input}
-              value={number}
-              onChangeText={setNumber}
-              placeholder="Mobile No."
-              keyboardType="numeric"
-             editable={user?.role === "Admin" ? true : false}
-            />
-         </View>
+  <View style={styles.inputWrapper}>
+    <TextInput
+      style={{ flex: 1 }}
+      value={number}
+      onChangeText={setNumber}
+      placeholder="Mobile No."
+      keyboardType="numeric"
+      editable={user?.role === "Admin"}
+    />
+
+    <TouchableOpacity
+      onPress={() => Clipboard.setString(number)}
+    >
+      <Ionicons
+        name="copy-outline"
+        size={22}
+        color="#003961"
+      />
+    </TouchableOpacity>
+  </View>
+</View>
 </View>
 
 
@@ -869,6 +880,11 @@ const notcomplete = () => {
  
 </View>
           
+
+
+
+
+
 
         <View style={styles.halfInput}>
 <View style={{ flex: 1 }}>
@@ -1310,8 +1326,8 @@ const notcomplete = () => {
 
             }
 
-              <View style={styles.halfInput}>
-            <View style={{ flex: 1 }}>
+             
+          
                <Text style={styles.label}>Last Call Time</Text>
             <View style={styles.pickerWrapper}>
               <SelectList
@@ -1325,8 +1341,7 @@ const notcomplete = () => {
               // defaultOption={{ key: '0', value: lastCall }}  // if using default
               />
             </View>
-            </View>
-            <View style={{ flex: 1 }}>
+          
  <Text style={styles.label}>Lead Status</Text>
             <View style={styles.pickerWrapper}>
               <SelectList
@@ -1338,8 +1353,8 @@ const notcomplete = () => {
                 defaultValue={lead}
               />
             </View>
-            </View>
-          </View>
+       
+          
            
 
 
@@ -1682,7 +1697,7 @@ pickerWrapper: {
 halfInput: {
   flexDirection: "row",
   gap: 10,
-  marginBottom: 15,
+  // marginBottom: 15,
 },
 
 selectBox: {
@@ -1731,6 +1746,15 @@ callBtn: {
 callText: {
   color: "#fff",
   textAlign: "center",
+},
+inputWrapper: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  borderWidth: 1,
+  borderColor: '#ccc',
+  borderRadius: 10,
+  paddingHorizontal: 10,
+  backgroundColor: '#fff',
 },
 });
 
