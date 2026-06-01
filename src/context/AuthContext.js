@@ -1,83 +1,150 @@
-// context/AuthContext.js
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+} from 'react';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Keychain from 'react-native-keychain';
+
 import ApiClient from '../component/ApiClient';
+
 const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
+
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {   
-    const loadAuthData = async () => {  
+  // ================= LOAD AUTH =================
+
+  useEffect(() => {
+
+    const loadAuthData = async () => {
+
       try {
-        // 🔐 Token from Keychain
-        const credentials = await Keychain.getGenericPassword();
-// console.log(credentials)
-        // 👤 User from AsyncStorage
-        const storedUser = await AsyncStorage.getItem('USER_DATA');
-// console.log(credentials,storedUser,"check data")
+
+        const credentials =
+          await Keychain.getGenericPassword();
+
+        const storedUser =
+          await AsyncStorage.getItem('USER_DATA');
+
         if (credentials && storedUser) {
-          // console.log(credentials.password,"password")
+
           setToken(credentials.password);
+
           setUser(JSON.parse(storedUser));
         }
+
       } catch (err) {
-        console.error('Error loading auth data:', err);
+
+        console.log('Load Auth Error:', err);
+
       } finally {
+
         setLoading(false);
       }
     };
 
     loadAuthData();
+
   }, []);
 
+  // ================= LOGIN =================
+
   const login = async (userData, userToken) => {
-    // 🔐 Save token securely
-    await Keychain.setGenericPassword("userToken", userToken);
 
-    // 👤 Save user data (non-sensitive)
-    await AsyncStorage.setItem('USER_DATA', JSON.stringify(userData));
+    try {
 
-    setToken(userToken);
-    setUser(userData);
+      // Save token securely
+      await Keychain.setGenericPassword(
+        'userToken',
+        userToken
+      );
+
+      // Save user data
+      await AsyncStorage.setItem(
+        'USER_DATA',
+        JSON.stringify(userData)
+      );
+
+      setToken(userToken);
+      setUser(userData);
+
+    } catch (e) {
+
+      console.log('Login Error:', e);
+    }
   };
 
-  const logout = async () => {
+  // ================= LOGOUT =================
 
-try {
-  const payload={
-user_id:user?.user_id
-  }
- const res=await ApiClient.post("/user-logout",payload,{
-headers:{
- Authorization: `Bearer ${token}`
-}
- })
- if(res.status==200){
- await Keychain.resetGenericPassword();
-    await AsyncStorage.removeItem('USER_DATA');
- await AsyncStorage.removeItem('FILTER_DATA');
-  await AsyncStorage.removeItem('token');
-  
-    setToken(null);
-    setUser(null);
- }
-//  console.log(res.status)
-} catch (error) {
-  console.log(error)
-}
+  const logout = useCallback(
+    async (callApi = true) => {
 
-   
-  };
-global.logoutUser = logout;
+      try {
 
+        // Manual logout pe hi API call
+        if (callApi && token) {
 
-// console.log(user?.user_id)
+          const payload = {
+            user_id: user?.user_id,
+          };
+
+          await ApiClient.post(
+            '/user-logout',
+            payload,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+        }
+
+      } catch (error) {
+
+        console.log('Logout API Error:', error);
+
+      } finally {
+
+        // Always clear local data
+
+        await Keychain.resetGenericPassword();
+
+        await AsyncStorage.multiRemove([
+          'USER_DATA',
+          'FILTER_DATA',
+          'token',
+          'handlSubmit',
+          'handlSubmitTL',
+        ]);
+
+        setToken(null);
+        setUser(null);
+      }
+    },
+    [token, user]
+  );
+
+  // ================= GLOBAL LOGOUT =================
+
+  useEffect(() => {
+
+    global.logoutUser = logout;
+
+    return () => {
+      global.logoutUser = null;
+    };
+
+  }, [logout]);
+
   return (
     <AuthContext.Provider
       value={{

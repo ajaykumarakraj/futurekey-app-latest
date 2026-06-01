@@ -205,29 +205,82 @@ if(res.data.status==200){
     <ScrollView style={styles.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
       <View style={{ paddingBottom: 100 }}>
         <Text style={styles.sectionHeader}>Basic Information</Text>
-        <TextInput style={styles.input} value={name} onChangeText={setName} placeholder="Name" placeholderTextColor="#000" />
-        <View style={styles.pickerWrapper}><SelectList data={genderData} setSelected={setSelectedGender} placeholder="Gender" search={false} /></View>
-
+        <View style={styles.halfInput}>
+          <View style={{ flex: 1 }}>
+            <TextInput style={styles.input} value={name} onChangeText={setName} placeholder="Name" placeholderTextColor="#000" />
+          </View>
+        
+       <View style={{ flex: 1 }}>
+         <View style={styles.pickerWrapper}><SelectList data={genderData} setSelected={setSelectedGender} placeholder="Gender" search={false}
+           boxStyles={styles.selectBox}
+      dropdownStyles={styles.dropdownStyle} /></View>
+       </View>
+</View>
         <Text style={styles.sectionHeader}>Contact Details</Text>
-        <TextInput style={styles.input}  maxLength={10} value={number} onChangeText={setNumber} placeholder="Mobile No." keyboardType="numeric" placeholderTextColor="#000" />
-        <TextInput style={styles.input}  maxLength={10} value={altnumber} onChangeText={setAltnumber} placeholder="Alt Mobile No." keyboardType="numeric" placeholderTextColor="#000" />
+        <View style={styles.halfInput}>
+            <View style={{ flex: 1 }}>
+               <TextInput style={styles.input}  maxLength={10} value={number} onChangeText={setNumber} placeholder="Mobile No." keyboardType="numeric" placeholderTextColor="#000" />
+            </View>
+         <View style={{ flex: 1 }}>
+          <TextInput style={styles.input}  maxLength={10} value={altnumber} onChangeText={setAltnumber} placeholder="Alt Mobile No." keyboardType="numeric" placeholderTextColor="#000" />
+         </View>
 
+        </View>
+      
         <Text style={styles.sectionHeader}>Location</Text>
-        <View style={styles.pickerWrapper}><SelectList data={statedata} setSelected={setSelectedState} placeholder="Select State" search={false} /></View>
+        <View style={styles.halfInput}>
+           <View style={{ flex: 1 }}>
+      
+        <View style={styles.pickerWrapper}><SelectList data={statedata} setSelected={setSelectedState} placeholder="Select State" search={false} 
+          boxStyles={styles.selectBox}
+      dropdownStyles={styles.dropdownStyle}
+        /></View>
+        </View>
+         <View style={{ flex: 1 }}>
         <TextInput style={styles.input} value={city} onChangeText={setCity} placeholder="Enter City" placeholderTextColor="#000" />
-
+        </View>
+</View>
         <Text style={styles.sectionHeader}>Client Type & Requirement</Text>
-        <View style={styles.pickerWrapper}><SelectList data={customerselectData} setSelected={setSelectcustomer} placeholder="Customer Type" search={false} /></View>
-        <View style={styles.pickerWrapper}><SelectList data={requireList} setSelected={setRequirement} placeholder="Requirement" search={false} /></View>
-
+        <View style={styles.halfInput}>
+           <View style={{ flex: 1 }}>
+        <View style={styles.pickerWrapper}><SelectList data={customerselectData} setSelected={setSelectcustomer} placeholder="Customer Type" search={false}
+          boxStyles={styles.selectBox}
+      dropdownStyles={styles.dropdownStyle} /></View>
+        </View>
+         <View style={{ flex: 1 }}>
+        <View style={styles.pickerWrapper}><SelectList data={requireList} setSelected={setRequirement} placeholder="Requirement" search={false}
+          boxStyles={styles.selectBox}
+      dropdownStyles={styles.dropdownStyle} /></View>
+        </View>
+</View>
         <Text style={styles.sectionHeader}>Lead Source & Project</Text>
-        <View style={styles.pickerWrapper}><SelectList data={leadsourcelist} setSelected={setLeadsource} placeholder="Lead Source" search={false} /></View>
-        <View style={styles.pickerWrapper}><SelectList data={projectList} setSelected={setProject} placeholder="Project" search={false} /></View>
-
+        <View style={styles.halfInput}>
+           <View style={{ flex: 1 }}>
+        <View style={styles.pickerWrapper}><SelectList data={leadsourcelist} setSelected={setLeadsource} placeholder="Lead Source" search={false} 
+          boxStyles={styles.selectBox}
+      dropdownStyles={styles.dropdownStyle}/></View>
+        </View>
+         <View style={{ flex: 1 }}>
+        <View style={styles.pickerWrapper}><SelectList data={projectList} setSelected={setProject} placeholder="Project" search={false}
+          boxStyles={styles.selectBox}
+      dropdownStyles={styles.dropdownStyle} /></View>
+        </View>
+</View>
         <Text style={styles.sectionHeader}>Team & Agent</Text>
-        <View style={styles.pickerWrapper}><SelectList data={teamleaderList} setSelected={handleTeamLeaderSelect} placeholder="Team Leader" search={false} /></View>
-        <View style={styles.pickerWrapper}><SelectList data={agentList} setSelected={setAgent} placeholder="Agent" search={false} /></View>
-
+        <View style={styles.halfInput}>
+           <View style={{ flex: 1 }}>
+        <View style={styles.pickerWrapper}><SelectList data={teamleaderList} setSelected={handleTeamLeaderSelect} placeholder="Team Leader" search={false} 
+          boxStyles={styles.selectBox}
+      dropdownStyles={styles.dropdownStyle}
+        
+        /></View>
+        </View>
+         <View style={{ flex: 1 }}>
+        <View style={styles.pickerWrapper}><SelectList data={agentList} setSelected={setAgent} placeholder="Agent" search={false} 
+          boxStyles={styles.selectBox}
+      dropdownStyles={styles.dropdownStyle}/></View>
+        </View>
+</View>
         <Text style={styles.sectionHeader}>Remark</Text>
         <TextInput style={styles.textArea} multiline numberOfLines={4} value={text} onChangeText={setText} placeholder="Enter your remarks here..." placeholderTextColor="#999" />
 
@@ -245,8 +298,8 @@ const styles = StyleSheet.create({
   sectionHeader: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 10,
-    marginTop: 20,
+    marginBottom: 5,
+    marginTop: 5,
     color: '#333',
   },
   container: {
@@ -262,19 +315,19 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: "white",
-    padding: 12,
-    borderRadius: 10,
-    marginBottom: 15,
+    padding: 5,
+    borderRadius: 5,
+    marginBottom: 5,
     fontSize: 16,
     elevation: 3,
   },
-  pickerWrapper: {
-    backgroundColor: "white",
-    borderRadius: 10,
-    marginBottom: 15,
-    elevation: 3,
-    overflow: "hidden",
-  },
+  // pickerWrapper: {
+  //   backgroundColor: "white",
+  //   borderRadius: 5,
+  //   // marginBottom: 15,
+  //   elevation: 3,
+  //   overflow: "hidden",
+  // },
   button: {
     backgroundColor: "#003961",
     padding: 15,
@@ -296,4 +349,21 @@ const styles = StyleSheet.create({
     height: 100,
     marginBottom: 15,
   },
+  halfInput: {
+  flexDirection: "row",
+  gap: 10,
+  // marginBottom: 15,
+},
+selectBox: {
+  paddingVertical: 4,
+  paddingHorizontal: 8,
+  minHeight: 32,
+   borderRadius: 5,
+},
+
+inputStyle: {
+  fontSize: 13,
+  margin: 0,
+  padding: 5,
+},
 });
