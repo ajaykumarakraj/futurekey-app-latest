@@ -85,12 +85,11 @@ console.log(leadsource ,project,leadType,toDate,fromDate ,currentForm,teamleader
     lead_status: leadStatus,
     tl_id:teamleader,
     agent_id:agent,
-    project:project,
-    lead_source:leadsource,
-    from_date:fromDate,
-    to_date:toDate
+    // project:project,
+    // lead_source:leadsource,
+   
   }
-  console.log("post data",payload)
+  console.log("post data TL",payload)
     try {
       const res = await ApiClient.post(`/filter-report`,payload ,{
         headers: {
@@ -125,7 +124,7 @@ console.log(leadsource ,project,leadType,toDate,fromDate ,currentForm,teamleader
         </View>
 
         <View style={styles.row}>
-          <LeadBox title="Upcoming Followups" count={data.upcoming_follow_up} icon={require('../../Assets/icons/upcomingfollow.png')} onPress={() => goToTable('upcoming_follow_up')} />
+          <LeadBox title="Tomorrow Followups" count={data.upcoming_follow_up} icon={require('../../Assets/icons/upcomingfollow.png')} onPress={() => goToTable('upcoming_follow_up')} />
           <LeadBox title="Today's Site Visits" count={data.today_site_visit} icon={require('../../Assets/icons/map.png')} onPress={() => goToTable('today_site_visit')} />
         </View>
 

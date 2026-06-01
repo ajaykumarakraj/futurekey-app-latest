@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect ,useCallback } from "react";
 import {
   View,
   Text,
@@ -14,6 +14,8 @@ import {
   Modal,
   Linking
 } from "react-native";
+import { useFocusEffect } from '@react-navigation/native';
+
 import Clipboard from "@react-native-clipboard/clipboard";
 import SendIntentAndroid from "react-native-send-intent";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -187,10 +189,13 @@ const visitstatus=[
 //poup funtion end
 
 
- 
-useEffect(()=>{
-allapicall()
-},[])
+useFocusEffect(
+  useCallback(() => {
+    allapicall();
+
+    return () => {};
+  }, [])
+);
 
 const allapicall=async()=>{
 try {
@@ -746,7 +751,8 @@ const notcomplete = () => {
 
 // console.log(user.role)
   return (
-    <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+    <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}   nestedScrollEnabled={true}
+  keyboardShouldPersistTaps="handled" >
      
       <View style={styles.container}>
       
@@ -827,6 +833,7 @@ const notcomplete = () => {
   <View style={styles.inputWrapper}>
     <TextInput
       style={{ flex: 1 }}
+      // style={styles.input}
       value={number}
       onChangeText={setNumber}
       placeholder="Mobile No."
@@ -860,13 +867,16 @@ const notcomplete = () => {
                 save="value"
                 search={false}
                 defaultValue={selectedGender}
+               
+                inputStyles={styles.inputStyle}
                  boxStyles={styles.selectBox}
       dropdownStyles={styles.dropdownStyle}
               />
             </View>
   </View>
   <View style={{ flex: 1 }}>
-  <Text style={styles.textlavel}>Alternate Mobile No.</Text>
+ <View>
+   <Text style={styles.textlavel}>Alternate Mobile No.</Text>
             <TextInput
               style={styles.input}
               value={altnumber}
@@ -876,6 +886,7 @@ const notcomplete = () => {
               placeholderTextColor="#000"
               //  editable={user.role === "Admin" ? true : false}
             />
+ </View>
   </View>
  
 </View>
@@ -885,10 +896,7 @@ const notcomplete = () => {
 
 
 
-
-        <View style={styles.halfInput}>
-<View style={{ flex: 1 }}>
- <Text style={styles.textlavel}>State</Text>
+  <Text style={styles.textlavel}>State</Text>
             {/* <View style={styles.pickerWrapper}><SelectList   placeholder="Select State" search={false} /></View> */}
             <View style={styles.pickerWrapper}>
               <SelectList
@@ -903,9 +911,10 @@ const notcomplete = () => {
       dropdownStyles={styles.dropdownStyle}
               />
             </View>
-</View>
-<View style={{ flex: 1 }}>
-<Text style={styles.textlavel}>City</Text>
+        <View style={styles.halfInput}>
+          <View style={{ flex: 1 }}>
+<View>
+  <Text style={styles.textlavel}>City</Text>
             <TextInput
               style={styles.input}
               value={selectedCity}
@@ -914,15 +923,15 @@ const notcomplete = () => {
 
               placeholderTextColor="#000"
             />
+</View>
 
 </View>
-        </View>
-           
-            <View style={styles.halfInput}>
-              <View style={{ flex: 1 }}>
+   <View style={{ flex: 1 }}>
+  
 
             <Text style={styles.textlavel}>Customer Type</Text>
-            <View style={styles.pickerWrapper}>
+           
+ <View style={styles.pickerWrapper}>
               <SelectList
                 data={customerTypeData}
                 setSelected={setSelectCustomer}
@@ -931,12 +940,19 @@ const notcomplete = () => {
                 search={false}
                 defaultValue={selectCustomer}
                   boxStyles={styles.selectBox}
-      dropdownStyles={styles.dropdownStyle}
+                      dropdownStyles={styles.dropdownStyle}
               />
             </View>
+             
 
-              </View>
-              <View style={{ flex: 1 }}>
+
+            </View>
+
+
+        </View>
+              
+          
+               <View style={{ flex: 1 }}>
  <Text style={styles.textlavel}>Requirement</Text>
             <View style={styles.pickerWrapper}>
               <SelectList
@@ -951,11 +967,8 @@ const notcomplete = () => {
               />
             </View>
               </View>
-            </View>
-
-           
-
-            <Text style={styles.textlavel}>Lead Source</Text>
+         <View style={{ flex: 1 }}>
+    <Text style={styles.textlavel}>Lead Source</Text>
             <View style={styles.pickerWrapper}>
               <SelectList
                 data={leadsourcelist}
@@ -968,20 +981,16 @@ const notcomplete = () => {
       dropdownStyles={styles.dropdownStyle}
               />
             </View>
+ 
+</View>
+             
+            
 
-            <Text style={styles.textlavel}>Project</Text>
-            <View style={styles.pickerWrapper}>
-              <SelectList
-                data={projectlist}
-                setSelected={setProject}
-                placeholder={project}
-                save="value"
-                search={false}
-                defaultValue={project}
-                  boxStyles={styles.selectBox}
-      dropdownStyles={styles.dropdownStyle}
-              />
-            </View>
+           
+
+    
+
+          
 <View style={styles.halfInput}>
 
   <View style={{ flex: 1 }}>
@@ -998,7 +1007,10 @@ const notcomplete = () => {
                   // save="value"
                   search={false}
                   defaultValue={teamLeader}
-                    boxStyles={styles.selectBox}
+                   
+                inputStyles={styles.inputStyle}
+                 boxStyles={styles.selectBox}
+                    // boxStyles={styles.selectBox}
       dropdownStyles={styles.dropdownStyle}
                 />
               )}
@@ -1017,7 +1029,10 @@ const notcomplete = () => {
                   // save="value"
                   search={false}
                   defaultValue={agentget}
-                    boxStyles={styles.selectBox}
+                   
+                inputStyles={styles.inputStyle}
+                 boxStyles={styles.selectBox}
+      //               boxStyles={styles.selectBox}
       dropdownStyles={styles.dropdownStyle}
                 />
               )}
@@ -1026,7 +1041,20 @@ const notcomplete = () => {
 </View>
           
            
-
+  <Text style={styles.textlavel}>Project</Text>
+            <View style={styles.pickerWrapper}>
+              <SelectList
+                data={projectlist}
+                setSelected={setProject}
+                placeholder={project}
+                save="value"
+                search={false}
+                defaultValue={project}
+                  boxStyles={styles.selectBox}
+                     inputStyles={styles.inputStyle}
+      dropdownStyles={styles.dropdownStyle}
+              />
+            </View>
 
             {loading ? (
               <ActivityIndicator size="large" color="#003961" />
@@ -1042,7 +1070,7 @@ const notcomplete = () => {
             <Text>Notes</Text>
             <View style={styles.scrollBox}>
 
-              <ScrollView style={{ maxHeight: 300, }} nestedScrollEnabled={true}>
+              <ScrollView style={{ maxHeight: 280, }} nestedScrollEnabled={true}>
                 {data.length === 0 ? (
                   <Text style={styles.loadingText}>Loading...</Text>
                 ) : (
@@ -1051,7 +1079,9 @@ const notcomplete = () => {
                       {item.notes?.trim() ? (
                         <Text style={styles.notetext}> {item.notes}</Text>
                       ) : null}
-
+                    {item.follow_up?.trim() ? (
+                        <Text style={styles.notetext}> {item.follow_up}</Text>
+                      ) : null}
                       {item.call_status?.trim() ? (
                         <Text style={styles.notetext}> {item.call_status}</Text>
                       ) : null}
@@ -1113,12 +1143,7 @@ const notcomplete = () => {
                     style={{ width: 30, height: 30 }}
                   />
                 </TouchableOpacity>
-                {/* <TouchableOpacity onPress={handleCall}>
-                  <Image
-                    source={require('../../Assets/icons/phone-call.png')}
-                    style={{ width: 30, height: 30 }}
-                  />
-                </TouchableOpacity> */}
+             
                 
                 <TouchableOpacity onPress={() => setShowCallPopup(true)}>
   <Image
@@ -1137,57 +1162,6 @@ const notcomplete = () => {
               value={notes}
               onChangeText={setNotes}
             />
-<View style={styles.schedule}>
-  <Text style={styles.label}>Visit Status</Text>
-
-  <View style={styles.statusadd}>
-    
-    <TouchableOpacity 
-      style={[
-        styles.iconButton,
-        status === "complete" && styles.activeComplete
-      ]}
-      onPress={completeside}
-    >
-      <Icon 
-        name="check-circle" 
-        size={22} 
-        color={status === "complete" ? "green" : "green"} 
-      />
-    </TouchableOpacity>
-
-    <TouchableOpacity 
-      style={[
-        styles.iconButton,
-        status === "notcomplete" && styles.activeNotComplete
-      ]}
-      onPress={notcomplete}
-    >
-      <Icon 
-        name="cancel" 
-        size={22} 
-        color={status === "notcomplete" ? "red" : "red"} 
-      />
-    </TouchableOpacity>
-<TouchableOpacity 
-  onPress={openPopup}
-  style={{
-    backgroundColor: '#003961',
-    paddingVertical: 5,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom:5
-  }}
->
-  <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>
-    View
-  </Text>
-</TouchableOpacity>
-  </View>
-</View>
-  
 <View>
   <Modal transparent={true} visible={modalVisible} animationType="slide">
         <View style={styles.overlay}>
@@ -1239,7 +1213,65 @@ const notcomplete = () => {
         </View>
       </Modal>
 </View>
-            <View   style={styles.visit}>
+
+            
+<View style={styles.schedule}>
+  <Text style={styles.label}>Visit Status</Text>
+
+  <View style={styles.statusadd}>
+    
+    <TouchableOpacity 
+      style={[
+        styles.iconButton,
+        status === "complete" && styles.activeComplete
+      ]}
+      onPress={completeside}
+    >
+      <Icon 
+        name="check-circle" 
+        size={22} 
+        color={status === "complete" ? "green" : "green"} 
+      />
+    </TouchableOpacity>
+
+    <TouchableOpacity 
+      style={[
+        styles.iconButton,
+        status === "notcomplete" && styles.activeNotComplete
+      ]}
+      onPress={notcomplete}
+    >
+      <Icon 
+        name="cancel" 
+        size={22} 
+        color={status === "notcomplete" ? "red" : "red"} 
+      />
+    </TouchableOpacity>
+<TouchableOpacity 
+  onPress={openPopup}
+  style={{
+    backgroundColor: '#003961',
+    paddingVertical: 5,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom:5
+  }}
+>
+  <Text style={{ color: '#fff', fontSize: 14,  }}>
+    View
+  </Text>
+</TouchableOpacity>
+  </View>
+  
+</View>
+  
+<View style={styles.halfInput}>
+
+   <View style={{ flex: 1 }}>
+            {/* <View   style={styles.visit}> */}
+                <View style={styles.pickerWrapper}>
 <SelectList 
                 data={visitstatus}
                 setSelected={handleVisitStatus}
@@ -1248,9 +1280,16 @@ const notcomplete = () => {
                 
                 search={false}
                 defaultValue={VisitStatus}
+                  boxStyles={styles.selectBox}
+                     inputStyles={styles.inputStyle}
+      dropdownStyles={styles.dropdownStyle}
               />
 </View>
+</View>
 
+
+
+ <View style={{ flex: 1 }}>
 {VisitStatus && (
   <View>
     <TouchableOpacity
@@ -1278,8 +1317,8 @@ const notcomplete = () => {
     )}
   </View>
 )}
-  
-
+  </View>
+</View>
         
 
             <Text style={styles.label}>Call Status</Text>
@@ -1290,6 +1329,9 @@ const notcomplete = () => {
                 placeholder="Select Call Status"
                 save="value"
                 search={false} 
+                  boxStyles={styles.selectBox}
+                     inputStyles={styles.inputStyle}
+      dropdownStyles={styles.dropdownStyle}
                 // defaultValue={call}
               />
             </View>
@@ -1327,21 +1369,25 @@ const notcomplete = () => {
             }
 
              
-          
+          <View style={styles.halfInput}>
+             <View style={{ flex: 1 }}>
                <Text style={styles.label}>Last Call Time</Text>
             <View style={styles.pickerWrapper}>
               <SelectList
                 data={getActionOptions()}
                 setSelected={setCallAction}
                 disabled={!callstatus}
-                placeholder="Select Last Call Time"
+                placeholder="Last Call Time"
                 save="value"
                 search={false}
-                
+                  boxStyles={styles.selectBox}
+                     inputStyles={styles.inputStyle}
+      // dropdownStyles={styles.dropdownStyle}
               // defaultOption={{ key: '0', value: lastCall }}  // if using default
               />
             </View>
-          
+          </View>
+           <View style={{ flex: 1 }}>
  <Text style={styles.label}>Lead Status</Text>
             <View style={styles.pickerWrapper}>
               <SelectList
@@ -1351,17 +1397,20 @@ const notcomplete = () => {
                 save="key"
                 search={false}
                 defaultValue={lead}
+                  boxStyles={styles.selectBox}
+                     inputStyles={styles.inputStyle}
+      // dropdownStyles={styles.dropdownStyle}
               />
             </View>
-       
-          
+       </View>
+          </View>
            
 
 
 
            
             <TouchableOpacity onPress={handleSaveNote} style={[styles.dateButton, styles.saveButton]}>
-              <Text style={[styles.dateText, { color: 'white', textAlign: 'center' }]}>Save</Text>
+              <Text style={[styles.dateText, { color: 'white', textAlign: 'center',fontSize:12 }]}>Save</Text>
             </TouchableOpacity>
           </>
         )}
@@ -1397,27 +1446,29 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: "white",
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 15,
+    padding: 8,
+    borderRadius: 5,
+    // marginBottom: 5,
     fontSize: 13,
     elevation: 3,
+    flex:1,
+    // height:30
   },
-  pickerWrapper: {
-    backgroundColor: "white",
-    borderRadius: 10,
-    // marginBottom: 15,
-    elevation: 3,
-    overflow: "hidden",
-    padding:0
-  },
+  // pickerWrapper: {
+  //   backgroundColor: "white",
+  //   borderRadius: 5,
+  //   // marginBottom: 15,
+  //   elevation: 3,
+  //   overflow: "hidden",
+  //   padding:0
+  // },
   button: {
     backgroundColor: "#003961",
     padding: 8,
     borderRadius: 10,
     alignItems: "center",
-    marginTop: 20,
-    marginBottom: 40
+    marginTop: 8,
+    marginBottom: 8
   },
   buttonText: {
     color: "white",
@@ -1427,7 +1478,7 @@ const styles = StyleSheet.create({
   switchButtons: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 20,
+    marginBottom: 8,
   },
   textArea: {
     height: 70,
@@ -1457,7 +1508,7 @@ const styles = StyleSheet.create({
   dateButton: {
     backgroundColor: "white",
     padding: 12,
-    borderRadius: 10,
+    borderRadius: 5,
     elevation: 3,
 
   },
@@ -1480,7 +1531,8 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingBottom: 10
+    alignItems:"flex-end",
+    paddingBottom: 8
   },
   icon: {
     display: "flex",
@@ -1505,7 +1557,7 @@ const styles = StyleSheet.create({
   dateButton: {
     backgroundColor: "white",
     padding: 12,
-    borderRadius: 10,
+    borderRadius: 5,
     elevation: 3,
   },
   dateText: {
@@ -1520,9 +1572,10 @@ const styles = StyleSheet.create({
   //   marginTop: 10,
   // },
   saveButton: {
-    marginTop: 30,
+    marginTop: 10,
     marginBottom: 40,
     backgroundColor: '#003961',
+  
   },
   remarkText: {
     color: "white"
@@ -1530,12 +1583,12 @@ const styles = StyleSheet.create({
   textlavel: {
     fontSize: 12,
     fontWeight: "600",
-    marginBottom: 0,
+    // marginBottom: 0,
     color: "#333",
-    marginTop: 12,
+    marginTop: 5,
   },
   disabledText: {
-    padding: 12,
+    padding: 8,
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 5,
@@ -1599,6 +1652,7 @@ const styles = StyleSheet.create({
     marginTop:10,
     display:"flex",
     flexDirection:"row",
+    alignItems:"flex-end",
     gap:20
   },
   statusadd:{
@@ -1687,12 +1741,10 @@ halfInput: {
 },
 halfField: {
   flex: 1,
-  zIndex: 5000,
+  // zIndex: 5000,
 },
 
-pickerWrapper: {
-  position: "relative",
-},
+
 
 halfInput: {
   flexDirection: "row",
@@ -1701,20 +1753,33 @@ halfInput: {
 },
 
 selectBox: {
-  borderRadius: 10,
+  borderRadius: 5,
   borderColor: "#ccc",
   height: 50,
   alignItems: "center",
 },
 
-dropdownStyle: {
-  position: "absolute",
-  top: 52,
-  width: "100%",
-  backgroundColor: "#fff",
-  zIndex: 5000,
-  elevation: 10,
-},
+
+// dropdownStyle: {
+// position:"absolute",
+//   backgroundColor: "#fff",
+// zIndex:9999,
+// width:"100%",
+// top:30
+// },
+// dropdownStyle: {
+//   position: "absolute",
+//   backgroundColor: "#fff",
+//   zIndex: 9999,
+//   width: "100%",
+//   top: 45, 
+
+//   maxHeight: 150, // important
+//   elevation: 5,
+
+//   borderWidth: 1,
+//   borderColor: "#ccc",
+// },
 modalOverlay: {
   flex: 1,
   backgroundColor: "rgba(0,0,0,0.5)",
@@ -1750,11 +1815,23 @@ callText: {
 inputWrapper: {
   flexDirection: 'row',
   alignItems: 'center',
-  borderWidth: 1,
+  // borderWidth: 1,
   borderColor: '#ccc',
-  borderRadius: 10,
+  borderRadius: 5,
   paddingHorizontal: 10,
   backgroundColor: '#fff',
+},
+selectBox: {
+  paddingVertical: 4,
+  paddingHorizontal: 8,
+  minHeight: 32,
+   borderRadius: 5,
+},
+
+inputStyle: {
+  fontSize: 13,
+  margin: 0,
+  padding: 5,
 },
 });
 

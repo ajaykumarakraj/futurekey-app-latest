@@ -18,7 +18,7 @@ const FilterForm = ({ navigation }) => {
 
 
   const [teamleaderList, setTeamleaderList] = useState([]);
-   const [teamleader, setTeamleader] = useState("");
+   const [teamleader, setTeamleader] = useState(null);
   const [agentList, setAgentList] = useState([]);
   const [agent, setAgent] = useState("");
 
@@ -105,7 +105,7 @@ const handlSubmit = async () => {
     currentForm
   };
 
-   await AsyncStorage.setItem('FILTER_DATA', JSON.stringify(filterData));
+   await AsyncStorage.setItem('handlSubmit', JSON.stringify(filterData));
 // await AsyncStorage.removeItem('FILTER_DATA');
   navigation.navigate('filtertable', filterData);
   // console.log(filterData)
@@ -126,23 +126,24 @@ const handlSubmit = async () => {
 
   const filterData = {
    leadsource,
-  project,
+  // project,
   leadType,
-  fromDate:fromdate,
-  toDate:todate,
+  // fromDate:fromdate,
+  // toDate:todate,
   currentForm,
   teamleader: teamleader,
   teamleaderName: Teamleadername,
   agent,
   agentName
   };
-// console.log(filterData,"ihijdhsf")
-  await AsyncStorage.setItem('FILTER_DATA', JSON.stringify(filterData));
+console.log(filterData,"ihijdhsf")
+  await AsyncStorage.setItem('handlSubmitTL', JSON.stringify(filterData));
 
   navigation.navigate('filterHomeScreen', filterData);
 };
 
-
+// AsyncStorage.removeItem('handlSubmit')
+// AsyncStorage.removeItem('handlSubmitTL')
 
 useEffect(() => {
   loadSavedFilters();
@@ -151,17 +152,47 @@ useEffect(() => {
 const loadSavedFilters = async () => {
   console.log("run savedata")
   try {
-    const savedData = await AsyncStorage.getItem('FILTER_DATA');
-    //  const savedData = await AsyncStorage.removeItem('FILTER_DATA');
-console.log(savedData,"savedData")
-    if (savedData) {
-      const parsedData = JSON.parse(savedData);
+    const savedDatalead = await AsyncStorage.getItem('handlSubmit');
+    
+console.log(savedDatalead,"savedData Lead")
+    if (savedDatalead) {
+      const parsedData = JSON.parse(savedDatalead);
 // console.log(parsedData.leadsource) 
       setLeadsource(parsedData.leadsource || "");
       setProject(parsedData.project || "");
       setLeadType(parsedData.leadType || "");
       setFromDate(parsedData.fromDate ? new Date(parsedData.fromDate) : null);
       setToDate(parsedData.toDate ? new Date(parsedData.toDate) : null);
+      setCurrentForm(parsedData.currentForm || "lead");
+      // setTeamleader(parsedData.teamleader || "");
+      // setAgent(parsedData.agent || "");
+      // setTeamleadername(parsedData.teamleaderName || "");
+      // setAgentName(parsedData.agentName || "");
+    }
+  } catch (error) {
+    console.log("Error loading filters:", error);
+  }
+};
+
+
+useEffect(() => {
+  loadSavedFiltersTL();
+}, []);
+
+const loadSavedFiltersTL = async () => {
+  console.log("run savedata")
+  try {
+    const savedDataTL = await AsyncStorage.getItem('handlSubmitTL');
+    //  const savedData = await AsyncStorage.removeItem('FILTER_DATA');
+console.log(savedDataTL,"savedData TL")
+    if (savedDataTL) {
+      const parsedData = JSON.parse(savedDataTL);
+console.log(parsedData.leadsource) 
+      // setLeadsource(parsedData.leadsource || "");
+      // setProject(parsedData.project || "");
+      // setLeadType(parsedData.leadType || "");
+      // setFromDate(parsedData.fromDate ? new Date(parsedData.fromDate) : null);
+      // setToDate(parsedData.toDate ? new Date(parsedData.toDate) : null);
       setCurrentForm(parsedData.currentForm || "lead");
       setTeamleader(parsedData.teamleader || "");
       setAgent(parsedData.agent || "");
@@ -172,7 +203,6 @@ console.log(savedData,"savedData")
     console.log("Error loading filters:", error);
   }
 };
-
     // date section 
  const formatDate = (date) => {
   if (!date) return null;
@@ -222,6 +252,30 @@ const fetchRequirements = async () => {
 
 
 
+const handlResetDate = async () => {
+  try {
+
+    const data = await AsyncStorage.getItem('handlSubmit');
+
+    if (data !== null) {
+      const parsedData = JSON.parse(data);
+
+      // reset values
+      parsedData.fromDate = "";
+      parsedData.toDate = "";
+
+      await AsyncStorage.setItem(
+        'handlSubmit',
+        JSON.stringify(parsedData)
+      );
+      navigation.replace("Filter");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+ 
 // console.log(user.role)
 // console.log(user)
 // console.log(Teamleadername,"leadType")
@@ -285,10 +339,15 @@ const fetchRequirements = async () => {
   </View>
 
 </View>
-  <TouchableOpacity style={styles.submitButton} onPress={handlSubmit}>
+<View style={styles.box}>
+   <TouchableOpacity style={styles.submitButton} onPress={handlResetDate}>
+                <Text style={styles.submitText} >Reset Date</Text>
+            </TouchableOpacity>
+    <TouchableOpacity style={styles.submitButton} onPress={handlSubmit}>
                 <Text style={styles.submitText} >Submit</Text>
             </TouchableOpacity>
 
+</View>
                     </View>
                 );
 
@@ -486,6 +545,7 @@ const styles = StyleSheet.create({
         padding: 12,
         borderRadius: 10,
         alignItems: 'center',
+        // width:"100%",
         marginTop:15
     },
     submitText: {
@@ -556,5 +616,10 @@ dateText: {
 placeholder: {
   color: "#999",
 },
-
+box:{
+display:"flex",
+flexDirection:"row",
+gap:20,
+justifyContent:"space-between"
+}
 });

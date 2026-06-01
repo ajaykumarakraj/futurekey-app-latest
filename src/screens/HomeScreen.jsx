@@ -99,7 +99,7 @@ console.log(res.data)
         </View>
 
         <View style={styles.row}>
-          <LeadBox title="Upcoming Followups" count={data.upcoming_follow_up} icon={require('../../Assets/icons/upcomingfollow.png')} onPress={() => goToTable('upcoming_follow_up')} />
+          <LeadBox title="Tomorrow Followups" count={data.upcoming_follow_up} icon={require('../../Assets/icons/upcomingfollow.png')} onPress={() => goToTable('upcoming_follow_up')} />
           <LeadBox title="Complete Site Visit" count={data.completed_site_visit} icon={require('../../Assets/icons/Completesitevisit.png')} onPress={() => goToTable('completed_site_visit')} />
              
         </View>

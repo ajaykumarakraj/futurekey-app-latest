@@ -118,14 +118,14 @@ const payload = {
   lead_status: leadStatus,
   user_id: user.user_id,
   type: currentForm,
-  tl_id: "",
-  agent_id: "",
+  tl_id: user.user_id,
+  agent_id: user.user_id,
   project:project,
   lead_source: leadsource,
   from_date: fromDate,
   to_date: toDate,
 };
-console.log("post data",payload)
+console.log("post data lead find",payload)
 
   try {
    
