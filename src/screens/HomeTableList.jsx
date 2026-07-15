@@ -40,6 +40,7 @@ const mapLeadTypeToStatus = (type) => {
     case 're_assign': return 11;
      case 'completed_site_visit': return 12;
      case "upcoming_follow_up":return 13;
+     case "duplicate_lead":return 14;
     default: return 0;
   }
 };
@@ -122,7 +123,7 @@ useFocusEffect(
         },
       }
     );
-// console.log(res.data)
+console.log(res.data)
     if (res.data.status === 200) {
       setData(res.data.data);
       setPage(res.data.meta.current_page);

@@ -68,7 +68,11 @@ console.log(res.data)
     <ScrollView
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
       <View style={styles.container}>
-
+ <View style={styles.row}>
+   {user?.role === "Admin" && (
+       <LeadBox title="Duplicate Leads" count={data.duplicate_lead} icon={require('../../Assets/icons/duplicate.png')} onPress={() => goToTable('duplicate_lead')} />
+     )}
+        </View>
         <View style={styles.row}>
           {user?.role === "Admin" && (
             <LeadBox title="Fresh Leads" count={data.fresh_lead} icon={require('../../Assets/icons/Freshlead.png')} onPress={() => goToTable('fresh_lead')} />
@@ -79,6 +83,7 @@ console.log(res.data)
               )}
          
         </View>
+       
  <View style={styles.row}>
        <LeadBox title="New Leads" count={data.new_lead} icon={require('../../Assets/icons/Newlead.png')} onPress={() => goToTable('new_lead')} />
       <LeadBox title="Converted" count={data.converted} icon={require('../../Assets/icons/Converted.png')} onPress={() => goToTable('converted')} />
